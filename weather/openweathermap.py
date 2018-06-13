@@ -47,6 +47,27 @@ class WeatherData(object):
         }
     }
     """
+    ICON_MAP = {
+        '01d': 'wi-day-sunny',
+        '02d': 'wi-day-cloudy',
+        '03d': 'wi-cloudy',
+        '04d': 'wi-cloudy',
+        '09d': 'wi-rain',
+        '10d': 'wi-day-rain',
+        '11d': 'wi-thunderstorm',
+        '13d': 'wi-snow',
+        '50d': 'wi-fog',
+        '01n': 'wi-night-clear',
+        '02n': 'wi-night-cloudy',
+        '03n': 'wi-cloudy',
+        '04n': 'wi-cloudy',
+        '09n': 'wi-rain',
+        '10n': 'wi-night-rain',
+        '11n': 'wi-night-alt-thunderstorm',
+        '13n': 'wi-snow',
+        '50n': 'wi-fog',
+    }
+
     def __init__(self, weather_data_json):
         self.all_data = weather_data_json
         self.main_data = weather_data_json.get('main')
@@ -115,7 +136,7 @@ class WeatherData(object):
 
     @property
     def weather_icon(self):
-        return '//openweathermap.org/img/w/%s.png' % self.weather_data.get('icon')
+        return self.ICON_MAP.get(self.weather_data.get('icon'))
 
     # Wind arguments
     @property

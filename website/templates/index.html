@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 {% block content %}
 
@@ -18,7 +19,7 @@
             </div>
             <div class="col-auto">
                 <div class="text-center">
-                    <img class="weather__icon" src="{{ weather_data.weather_icon }}" alt="{{ weather_data.weather_name }}">
+                    <i class="weather__icon wi {{ weather_data.weather_icon }}"></i>
                     <span class="weather__icon-name">{{ weather_data.weather_name }}</span>
                 </div>
             </div>
