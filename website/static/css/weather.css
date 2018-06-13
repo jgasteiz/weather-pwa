@@ -1,6 +1,30 @@
 .weather {
-    margin: 20px 0;
+    margin: 30px 0;
 }
 .weather__location {
-    margin: 0 0 20px;
+    margin: 0 0 24px;
+}
+.weather__date,
+.weather__min-max,
+.weather__temperature {
+    display: block;
+}
+.weather__date {
+    font-weight: 600;
+    margin-bottom: 6px;
+}
+.weather__min-max {
+    font-weight: 300;
+}
+.weather__temperature {
+    font-size: 2.6rem;
+    line-height: 1.2;
+}
+.weather__icon {
+    display: block;
+    width: 92px;
+}
+.weather__icon-name {
+    display: block;
+    font-size: 1.2rem;
 }
