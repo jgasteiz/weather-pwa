@@ -1,7 +1,33 @@
 {% extends "base.html" %}
 
 {% block content %}
-    <h1>Weather</h1>
 
-    <div><pre>{{ weather_data }}</pre></div>
+    <div class="weather">
+        <h1 class="weather__location">{{ weather_data.location_name }}</h1>
+
+        <div class="row">
+            <div class="col">
+                <span>{{ weather_data.data_time }}</span>
+                <p>
+                    <span>min: {{ weather_data.temperature_min }}&#x2103;, max: {{ weather_data.temperature_max }}&#x2103;</span>
+                    <br>
+                    <strong>{{ weather_data.temperature }}&#x2103;</strong>
+                </p>
+            </div>
+            <div class="col-auto">
+                <div class="text-right">
+                    <img src="{{ weather_data.weather_icon }}" alt="{{ weather_data.weather_name }}">
+                    <br>
+                    <span>{{ weather_data.weather_name }}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+{#    <hr>#}
+{#    <div>#}
+{#        JSON response:#}
+{#        <pre>{{ weather_data }}</pre>#}
+{#    </div>#}
 {% endblock %}
