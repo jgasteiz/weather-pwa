@@ -1,0 +1,15 @@
+import os
+
+import requests
+from django.http import HttpResponse
+
+OPEN_WEATHER_MAP_URL = 'http://api.openweathermap.org'
+WEATHER_ENDPOINT = 'data/2.5/weather?q={query}&appid={app_id}'
+APP_ID = os.environ.get('APP_ID')
+
+
+def index(request):
+    query = request.GET.get('q', 'London,uk')
+    weather_endpoint = WEATHER_ENDPOINT.format(query=query, app_id=APP_ID)
+    r = requests.get('%s/%s' % (OPEN_WEATHER_MAP_URL, weather_endpoint))
+    return HttpResponse('<pre>' + r.text + '</pre>')

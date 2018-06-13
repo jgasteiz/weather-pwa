@@ -1,0 +1,13 @@
+# Mac OS X
+.DS_Store
+
+# Project ignored files
+venv
+.env
+*.pyc
+staticfiles
+db.sqlite3
+
+# Code editors
+.idea/
+.vscode/
