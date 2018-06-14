@@ -11,7 +11,6 @@
 }
 .weather__date {
     font-weight: 600;
-    margin-bottom: 48px;
 }
 .weather__min-max {
     font-weight: 300;
@@ -23,9 +22,11 @@
 .weather__icon {
     color: #924da3;
     display: block;
-    font-size: 90px;
+    font-size: 8rem;
+    line-height: 1.5;
+    margin: 60px 0 30px;
 }
 .weather__icon-name {
     display: block;
-    font-size: 1.2rem;
+    font-size: 2rem;
 }

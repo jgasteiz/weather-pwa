@@ -14,5 +14,8 @@
 </head>
 <body>
     <div class="container-fluid">{% block content %}{% endblock %}</div>
+
+    <script src="{% static 'lazylibs/react.development.js' %}"></script>
+    <script src="{% static 'dist/app.bundle.js' %}"></script>
 </body>
 </html>

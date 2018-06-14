@@ -75,8 +75,22 @@ class WeatherData(object):
         self.weather_data = weather_data_json.get('weather')[0]
         self.wind_data = weather_data_json.get('wind')
 
+    def __repr__(self):
+        return '%s, %s' % self.location_name, self.temperature
+
     def __str__(self):
         return json.dumps(self.all_data, sort_keys=True, indent=4)
+
+    def json(self):
+        return json.dumps({
+            'location_name': self.location_name,
+            'data_time': self.data_time.strftime('%B %d, %H:%M'),
+            'temperature_min': self.temperature_min,
+            'temperature_max': self.temperature_max,
+            'temperature': self.temperature,
+            'weather_icon': self.weather_icon,
+            'weather_name': self.weather_name,
+        })
 
     @property
     def clouds(self):
@@ -178,6 +192,13 @@ class OpenWeatherMapController(object):
         weather_endpoint = self.WEATHER_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
         res = requests.get('%s/%s' % (self.API_URL, weather_endpoint))
         return WeatherData(res.json())
+
+    def get_weather_json(self, city_id=LONDON_CITY_ID):
+        """
+        Fetch the weather data for the given city id and return its data
+        in json format.
+        """
+        return self.get_weather(city_id).json()
 
     def get_forecast(self, city_id=LONDON_CITY_ID):
         """

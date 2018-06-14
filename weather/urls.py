@@ -9,5 +9,6 @@ from website import views
 
 urlpatterns = [
     url(r'^$', views.index, name='index'),
+    url(r'^api/weather', views.weather, name='weather'),
     path('admin/', admin.site.urls),
 ]
