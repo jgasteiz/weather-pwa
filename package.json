@@ -20,6 +20,6 @@
   "scripts": {
     "webpack": "webpack --progress --colors",
     "webpack-watch": "webpack --progress --colors --watch",
-    "postinstall": "webpack && python manage.py collectstatic --noinput"
+    "heroku-postbuild": "webpack && python manage.py collectstatic --noinput"
   }
 }
