@@ -3,9 +3,6 @@ import React from 'react';
 import Weather from '../services/Weather.service';
 
 
-const FORECAST = 'forecast';
-
-
 export default class App extends React.Component {
     constructor(props) {
         super(props);
@@ -32,7 +29,7 @@ export default class App extends React.Component {
                 </span>
 
                 <div className="text-center">
-                    <i className={`weather__icon wi ${this.state.weatherIcon}`}/>
+                    <i className={`weather__icon weather__icon--large wi ${this.state.weatherIcon}`}/>
                     <span className="weather__icon-name">{this.state.weatherName}</span>
                 </div>
 
@@ -46,43 +43,27 @@ export default class App extends React.Component {
             return '';
         }
         const forecastRows = this.state.forecast.map(function (data, index) {
-            return (<tr className="text-center" key={data.data_time}>
-                <td>
-                    {data.data_time}
-                </td>
-                <td>
-                    <div><i className={`weather__icon wi ${data.weather_icon}`}/></div>
+            return (
+                <div className="forecast__hour" key={data.data_hour}>
                     <div>{data.temperature}</div>
-                    <div>{data.weather_name}</div>
-                </td>
-                <td>{data.precipitation_probability}%</td>
-            </tr>);
+                    <div><i className={`weather__icon wi ${data.weather_icon}`}/></div>
+                    <div>{data.data_hour}</div>
+                </div>
+            );
         });
 
         return (
             <div>
                 <h3>Forecast</h3>
-                <table className="table table-striped">
-                    <thead>
-                    <tr className="text-center">
-                        <th scope="col">Time</th>
-                        <th scope="col">Temperature</th>
-                        <th scope="col">Precipitation probability</th>
-                    </tr>
-                    </thead>
-                    <tbody>
+                <div className="forecast__data-wrp">
+                    <div className="forecast__data">
                         {forecastRows}
-                    </tbody>
-                </table>
+                    </div>
+                </div>
             </div>
         );
     }
 
-    /**
-     * When the component is ready and mounted, initialize key bindings:
-     * - arrow right: next page handler
-     * - arrow left: previous page handler
-     */
     componentDidMount() {
         this.getForecastData();
     }

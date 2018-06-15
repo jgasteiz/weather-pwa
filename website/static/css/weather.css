@@ -24,11 +24,27 @@
     font-size: 3rem;
     line-height: 1.2;
 }
+.weather__icon--large {
+    font-size: 10rem;
+}
 .weather__icon-name {
     display: block;
-    font-size: 1.2rem;
+    font-size: 2.4rem;
 }
 
 .forecast {
     margin: 60px 0;
+}
+.forecast__data-wrp {
+    overflow: scroll;
+}
+.forecast__data {
+    display: flex;
+    margin: 0 -12px;
+    padding: 0 0 12px;
+}
+.forecast__hour {
+    flex-shrink: 0;
+    text-align: center;
+    margin: 0 12px;
 }

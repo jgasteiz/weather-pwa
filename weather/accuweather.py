@@ -97,6 +97,7 @@ class ForecastDataPoint(object):
         return {
             'location_name': self.location_name,
             'data_time': self.datetime.strftime('%B %d, %H:%M'),
+            'data_hour': self.datetime.strftime('%H:%M'),
             'temperature': self.temperature,
             'precipitation_probability': self.precipitation_probability,
             'weather_icon': self.weather_icon,
