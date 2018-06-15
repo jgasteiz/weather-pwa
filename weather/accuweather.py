@@ -40,6 +40,49 @@ class ForecastDataPoint(object):
         "Link": "http://www.accuweather.com/en/gb/london/ec4a-2/hourly-weather-forecast/328328?day=1&hbhhour=18&unit=c&lang=en-gb"
     },
     """
+    ICON_MAP = {
+        '1': 'wi-day-sunny',
+        '2': 'wi-day-sunny',
+        '3': 'wi-day-sunny',
+        '4': 'wi-day-sunny',
+        '5': 'wi-day-haze',
+        '6': 'wi-day-cloudy',
+        '7': 'wi-cloudy',
+        '8': 'wi-cloudy',
+        '11': 'wi-fog',
+        '12': 'wi-showers',
+        '13': 'wi-showers',
+        '14': 'wi-day-showers',
+        '15': 'wi-storm-showers',
+        '16': 'wi-storm-showers',
+        '17': 'wi-day-thunderstorm',
+        '18': 'wi-rain',
+        '19': 'wi-rain-mix',
+        '20': 'wi-day-rain-mix',
+        '21': 'wi-day-rain-mix',
+        '22': 'wi-snow',
+        '23': 'wi-day-snow',
+        '24': 'wi-snow',
+        '25': 'wi-sleet',
+        '26': 'wi-rain-mix',
+        '29': 'wi-snow',
+        '30': 'wi-hot',
+        '31': 'wi-snowflake-cold',
+        '32': 'wi-windy',
+        '33': 'wi-night-clear',
+        '34': 'wi-night-clear',
+        '35': 'wi-night-alt-cloudy',
+        '36': 'wi-night-alt-cloudy',
+        '37': 'wi-night-fog',
+        '38': 'wi-night-alt-cloudy',
+        '39': 'wi-night-alt-rain',
+        '40': 'wi-night-alt-rain',
+        '41': 'wi-night-alt-storm-showers',
+        '42': 'wi-night-alt-storm-showers',
+        '43': 'wi-night-sleet',
+        '44': 'wi-night-snow',
+    }
+
     def __init__(self, location_name, forecast_data_point):
         self.location_name = location_name
         self.all_data = forecast_data_point
@@ -77,9 +120,7 @@ class ForecastDataPoint(object):
     @property
     def weather_icon(self):
         weather_icon = str(self.all_data.get('WeatherIcon'))
-        if len(weather_icon) == 1:
-            weather_icon = '0%s' % weather_icon
-        return 'https://developer.accuweather.com/sites/default/files/%s-s.png' % weather_icon
+        return self.ICON_MAP.get(weather_icon)
 
     @property
     def weather_icon_name(self):

@@ -32,7 +32,7 @@ export default class App extends React.Component {
                 </span>
 
                 <div className="text-center">
-                    <img src={this.state.weatherIcon}/>
+                    <i className={`weather__icon wi ${this.state.weatherIcon}`}/>
                     <span className="weather__icon-name">{this.state.weatherName}</span>
                 </div>
 
@@ -51,8 +51,8 @@ export default class App extends React.Component {
                     {data.data_time}
                 </td>
                 <td>
+                    <div><i className={`weather__icon wi ${data.weather_icon}`}/></div>
                     <div>{data.temperature}</div>
-                    <div><img src={data.weather_icon} alt={data.weather_name}/></div>
                     <div>{data.weather_name}</div>
                 </td>
                 <td>{data.precipitation_probability}%</td>
