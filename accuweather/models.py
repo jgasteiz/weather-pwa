@@ -1,3 +1,5 @@
+import pytz
+from django.conf import settings
 from django.db import models
 
 
@@ -18,3 +20,7 @@ class ForecastDataPoint(models.Model):
 
     def __str__(self):
         return '%s | %s | %s' % (self.location_name, self.datetime, self.temperature)
+
+    @property
+    def localized_datetime(self):
+        return self.datetime.astimezone(pytz.timezone(settings.TIME_ZONE))

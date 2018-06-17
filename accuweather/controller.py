@@ -3,6 +3,7 @@ from datetime import datetime
 
 import pytz
 import requests
+from django.conf import settings
 
 from .models import ForecastDataPoint
 
@@ -74,7 +75,7 @@ class AccuWeatherController(object):
         # Fetch the forecast for the next 12 hours, update the forecast data points.
         for data_point in forecast_data:
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
-            data_point_datetime = utc_datetime.astimezone(pytz.timezone('Europe/London'))
+            data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
             forecast.location_name = self.LOCATION_NAME
             forecast.temperature = data_point.get('Temperature').get('Value')

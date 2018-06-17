@@ -21,7 +21,7 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
         )
 
     def get_data_hour(self, obj):
-        return obj.datetime.strftime('%H:%M'),
+        return obj.localized_datetime.strftime('%H:%M'),
 
     def get_data_time(self, obj):
-        return obj.datetime.strftime('%B %d, %H:%M')
+        return obj.localized_datetime.strftime('%B %d, %H:%M')
