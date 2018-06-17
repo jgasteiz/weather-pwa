@@ -9,6 +9,8 @@ django-heroku = "*"
 requests = "*"
 whitenoise = "*"
 ipdb = "*"
+dj-database-url = "*"
+djangorestframework = "*"
 
 [requires]
 python_version = "3.6"

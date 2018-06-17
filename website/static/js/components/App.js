@@ -77,7 +77,7 @@ export default class App extends React.Component {
                 dataTimestamp: firstForecastItem['data_time'],
                 temperature: firstForecastItem['temperature'],
                 weatherIcon: firstForecastItem['weather_icon'],
-                weatherName: firstForecastItem['weather_name'],
+                weatherName: firstForecastItem['weather_icon_name'],
                 mobileLink: firstForecastItem['mobile_link'],
                 forecast: forecast
             });
