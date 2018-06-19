@@ -1,5 +1,6 @@
 .weather {
-    margin: 30px 0;
+    margin: 30px auto;
+    max-width: 900px;
 }
 .weather__location {
     margin: 0 0 24px;
@@ -22,7 +23,7 @@
 .weather__icon {
     color: #924da3;
     font-size: 3rem;
-    line-height: 1.2;
+    line-height: 1.5;
 }
 .weather__icon--large {
     font-size: 10rem;
@@ -33,18 +34,29 @@
 }
 
 .forecast {
-    margin: 60px 0;
+    margin: 36px 0;
+}
+.forecast__group {
+    margin: 0 0 18px;
 }
 .forecast__data-wrp {
     overflow: scroll;
 }
 .forecast__data {
     display: flex;
-    margin: 0 -12px;
     padding: 0 0 12px;
 }
 .forecast__hour {
     flex-shrink: 0;
     text-align: center;
     margin: 0 12px;
+}
+.forecast__date {
+    flex-shrink: 0;
+    font-size: 0.8rem;
+    text-align: center;
+    width: 25%;
+}
+.forecast__date .weather__icon {
+    font-size: 2.4rem;
 }
