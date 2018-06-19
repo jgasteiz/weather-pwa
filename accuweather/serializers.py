@@ -12,6 +12,7 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
         fields = (
             'data_hour',
             'data_time',
+            'data_point_type',
             'location_name',
             'temperature',
             'precipitation_probability',
