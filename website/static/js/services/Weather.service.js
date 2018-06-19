@@ -1,4 +1,4 @@
-export default class Weather {
+export default class WeatherService {
 
     /**
      * Get the forecast data for the next 12 hours.
