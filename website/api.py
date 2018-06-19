@@ -8,8 +8,26 @@ from accuweather.serializers import ForecastDataPointSerializer
 
 @api_view(['GET'])
 def forecast(request):
-    forecast_qs = ForecastDataPoint.objects.filter(datetime__gt=timezone.now())
-    forecast_serializer = ForecastDataPointSerializer(forecast_qs, many=True)
-    current_conditions_qs = ForecastDataPoint.objects.filter(data_point_type=ForecastDataPoint.CURRENT_CONDITIONS).last()
-    current_weather_serializer = ForecastDataPointSerializer(current_conditions_qs)
-    return Response([current_weather_serializer.data] + forecast_serializer.data)
+    current_conditions_qs = ForecastDataPoint.objects.filter(
+        data_point_type=ForecastDataPoint.CURRENT_CONDITIONS
+    ).last()
+    current_conditions_serializer = ForecastDataPointSerializer(current_conditions_qs)
+
+    hourly_forecast_qs = ForecastDataPoint.objects.filter(
+        data_point_type=ForecastDataPoint.HOURLY_FORECAST,
+        datetime__gt=timezone.now()
+    )
+    hourly_forecast_serializer = ForecastDataPointSerializer(hourly_forecast_qs, many=True)
+
+    daily_forecast_qs = ForecastDataPoint.objects.filter(
+        data_point_type=ForecastDataPoint.DAILY_FORECAST,
+        datetime__gt=timezone.now()
+    )
+    daily_forecast_serializer = ForecastDataPointSerializer(daily_forecast_qs, many=True)
+
+    response_data = {
+        'current_conditions': current_conditions_serializer.data,
+        'hourly_forecast': hourly_forecast_serializer.data,
+        'daily_forecast': daily_forecast_serializer.data,
+    }
+    return Response(response_data)

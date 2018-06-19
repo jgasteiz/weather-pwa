@@ -19,8 +19,9 @@ class AccuWeatherController(object):
 
     API_URL = 'http://dataservice.accuweather.com'
 
-    FORECAST_ENDPOINT = 'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
     CURRENT_CONDITIONS_ENDPOINT = 'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    HOURLY_FORECAST_ENDPOINT = 'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    DAILY_FORECAST_ENDPOINT = 'forecasts/v1/daily/5day/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
 
     ICON_MAP = {
         '1': 'wi-day-sunny',
@@ -68,25 +69,6 @@ class AccuWeatherController(object):
     def __init__(self):
         self.api_key = os.environ.get('ACCUWEATHER_API_KEY')
 
-    def fetch_forecast(self, city_id=LONDON_CITY_ID):
-        forecast_endpoint = self.FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
-        forecast_data = requests.get(forecast_url).json()
-
-        # Fetch the forecast for the next 12 hours, update the forecast data points.
-        for data_point in forecast_data:
-            utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
-            data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
-            forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
-            forecast.data_point_type = ForecastDataPoint.FORECAST
-            forecast.location_name = self.LOCATION_NAME
-            forecast.temperature = data_point.get('Temperature').get('Value')
-            forecast.precipitation_probability = data_point.get('PrecipitationProbability')
-            forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('WeatherIcon')))
-            forecast.weather_icon_name = data_point.get('IconPhrase')
-            forecast.mobile_link = data_point.get('MobileLink')
-            forecast.save()
-
     def fetch_current_weather(self, city_id=LONDON_CITY_ID):
         """
         Create or update a ForecastDataPoint for the current weather.
@@ -106,3 +88,44 @@ class AccuWeatherController(object):
         forecast.weather_icon_name = data_point.get('WeatherText')
         forecast.mobile_link = data_point.get('MobileLink')
         forecast.save()
+
+    def fetch_hourly_forecast(self, city_id=LONDON_CITY_ID):
+        """
+        Create or update a bunch of ForecastDataPoint for the next 12 hours.
+        """
+        forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
+        forecast_data = requests.get(forecast_url).json()
+
+        for data_point in forecast_data:
+            utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
+            data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
+            forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+            forecast.data_point_type = ForecastDataPoint.HOURLY_FORECAST
+            forecast.location_name = self.LOCATION_NAME
+            forecast.temperature = data_point.get('Temperature').get('Value')
+            forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('WeatherIcon')))
+            forecast.weather_icon_name = data_point.get('IconPhrase')
+            forecast.mobile_link = data_point.get('MobileLink')
+            forecast.save()
+
+    def fetch_daily_forecast(self, city_id=LONDON_CITY_ID):
+        """
+        Create or update a bunch of ForecastDataPoint for the next 5 days.
+        """
+        forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
+        forecast_data = requests.get(forecast_url).json()
+
+        for data_point in forecast_data.get('DailyForecasts'):
+            utc_datetime = datetime.fromtimestamp(data_point.get('EpochDate'), tz=pytz.timezone('UTC'))
+            data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
+            forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+            forecast.data_point_type = ForecastDataPoint.DAILY_FORECAST
+            forecast.location_name = self.LOCATION_NAME
+            forecast.temperature_min = data_point.get('Temperature').get('Minimum').get('Value')
+            forecast.temperature_max = data_point.get('Temperature').get('Maximum').get('Value')
+            forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('Day').get('Icon')))
+            forecast.weather_icon_name = data_point.get('Day').get('IconPhrase')
+            forecast.mobile_link = data_point.get('MobileLink')
+            forecast.save()
