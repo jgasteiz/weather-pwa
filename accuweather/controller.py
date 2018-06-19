@@ -20,6 +20,7 @@ class AccuWeatherController(object):
     API_URL = 'http://dataservice.accuweather.com'
 
     FORECAST_ENDPOINT = 'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    CURRENT_CONDITIONS_ENDPOINT = 'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
 
     ICON_MAP = {
         '1': 'wi-day-sunny',
@@ -77,6 +78,7 @@ class AccuWeatherController(object):
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+            forecast.data_point_type = ForecastDataPoint.FORECAST
             forecast.location_name = self.LOCATION_NAME
             forecast.temperature = data_point.get('Temperature').get('Value')
             forecast.precipitation_probability = data_point.get('PrecipitationProbability')
@@ -84,3 +86,23 @@ class AccuWeatherController(object):
             forecast.weather_icon_name = data_point.get('IconPhrase')
             forecast.mobile_link = data_point.get('MobileLink')
             forecast.save()
+
+    def fetch_current_weather(self, city_id=LONDON_CITY_ID):
+        """
+        Create or update a ForecastDataPoint for the current weather.
+        """
+        current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        current_conditions_url = '%s/%s' % (self.API_URL, current_conditions_endpoint)
+        current_conditions_data = requests.get(current_conditions_url).json()
+
+        data_point = current_conditions_data[0]
+        utc_datetime = datetime.fromtimestamp(data_point.get('EpochTime'), tz=pytz.timezone('UTC'))
+        data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
+        forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+        forecast.data_point_type = ForecastDataPoint.CURRENT_CONDITIONS
+        forecast.location_name = self.LOCATION_NAME
+        forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
+        forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('WeatherIcon')))
+        forecast.weather_icon_name = data_point.get('WeatherText')
+        forecast.mobile_link = data_point.get('MobileLink')
+        forecast.save()

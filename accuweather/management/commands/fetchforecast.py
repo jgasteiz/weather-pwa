@@ -9,4 +9,5 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         forecast_controller = AccuWeatherController()
         forecast_controller.fetch_forecast()
+        forecast_controller.fetch_current_weather()
         self.stdout.write(self.style.SUCCESS('The forecast has been updated.'))
