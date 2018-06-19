@@ -79,7 +79,7 @@ export default class App extends React.Component {
                 weatherIcon: firstForecastItem['weather_icon'],
                 weatherName: firstForecastItem['weather_icon_name'],
                 mobileLink: firstForecastItem['mobile_link'],
-                forecast: forecast
+                forecast: forecast.slice(1, forecast.length),
             });
         });
     }
