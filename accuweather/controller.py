@@ -1,3 +1,4 @@
+import logging
 import os
 from datetime import datetime
 
@@ -75,8 +76,13 @@ class AccuWeatherController(object):
         """
         current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
         current_conditions_url = '%s/%s' % (self.API_URL, current_conditions_endpoint)
-        current_conditions_data = requests.get(current_conditions_url).json()
+        res = requests.get(current_conditions_url)
+        if res.status_code != 200:
+            error_msg = "Couldn't fetch the current weather. Reason: %s" % res.json()
+            logging.error(error_msg)
+            raise Exception(error_msg)
 
+        current_conditions_data = res.json()
         data_point = current_conditions_data[0]
         utc_datetime = datetime.fromtimestamp(data_point.get('EpochTime'), tz=pytz.timezone('UTC'))
         data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
@@ -95,8 +101,13 @@ class AccuWeatherController(object):
         """
         forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
         forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
-        forecast_data = requests.get(forecast_url).json()
+        res = requests.get(forecast_url)
+        if res.status_code != 200:
+            error_msg = "Couldn't fetch the hourly forecast. Reason: %s" % res.json()
+            logging.error(error_msg)
+            raise Exception(error_msg)
 
+        forecast_data = res.json()
         for data_point in forecast_data:
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
@@ -115,8 +126,13 @@ class AccuWeatherController(object):
         """
         forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
         forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
-        forecast_data = requests.get(forecast_url).json()
+        res = requests.get(forecast_url)
+        if res.status_code != 200:
+            error_msg = "Couldn't fetch the daily forecast. Reason: %s" % res.json()
+            logging.error(error_msg)
+            raise Exception(error_msg)
 
+        forecast_data = res.json()
         for data_point in forecast_data.get('DailyForecasts'):
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDate'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
