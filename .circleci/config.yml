@@ -32,7 +32,6 @@ jobs:
       - run:
           name: run tests
           command: |
-            pipenv run python manage.py collectstatic --noinput
             pipenv run python manage.py test --settings=weather.settings_test
 
       - store_artifacts:
