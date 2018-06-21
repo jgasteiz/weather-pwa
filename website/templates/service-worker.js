@@ -41,16 +41,12 @@
         )
     });
 
-    // Strategy Stale-while-revalidate: return cached if available, but fetch
-    // resources and update cache in the background.
-    // Mixed strategy. Network first with cache fallback for API requests,
-    // cache first with network fallback for static assets.
+    // Caching strategy:
+    // - API data requests: Network first + cache update + cache fallback.
+    // - Static assets: Cache first + fallback to network.
     // https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/
     self.addEventListener('fetch', function(event) {
         console.log('Fetch event for ', event.request.url);
-
-        // Network first for API data requests + cache response for the next offline moment.
-        // Cache first for static assets + fallback to network.
         event.respondWith(
             caches
                 .open(DATA_CACHE)
