@@ -12,6 +12,7 @@ ipdb = "*"
 dj-database-url = "*"
 djangorestframework = "*"
 pytest-django = "*"
+factory-boy = "*"
 
 [requires]
 python_version = "3.6"
