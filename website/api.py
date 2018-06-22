@@ -10,8 +10,11 @@ from accuweather.serializers import ForecastDataPointSerializer
 def forecast(request):
     current_conditions_qs = ForecastDataPoint.objects.filter(
         data_point_type=ForecastDataPoint.CURRENT_CONDITIONS
-    ).last()
-    current_conditions_serializer = ForecastDataPointSerializer(current_conditions_qs)
+    )
+    current_conditions = {}
+    if current_conditions_qs.exists():
+        current_conditions_serializer = ForecastDataPointSerializer(current_conditions_qs.last())
+        current_conditions = current_conditions_serializer.data
 
     hourly_forecast_qs = ForecastDataPoint.objects.filter(
         data_point_type=ForecastDataPoint.HOURLY_FORECAST,
@@ -26,7 +29,7 @@ def forecast(request):
     daily_forecast_serializer = ForecastDataPointSerializer(daily_forecast_qs, many=True)
 
     response_data = {
-        'current_conditions': current_conditions_serializer.data,
+        'current_conditions': current_conditions,
         'hourly_forecast': hourly_forecast_serializer.data,
         'daily_forecast': daily_forecast_serializer.data,
     }
