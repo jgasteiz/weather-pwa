@@ -1,6 +1,6 @@
 from django.http import HttpResponse
 
-from accuweather.controller import AccuWeatherController
+from weatherservice.controller import AccuWeatherController
 
 
 def fetch_forecast(request):

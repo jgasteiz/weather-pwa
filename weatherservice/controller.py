@@ -14,11 +14,11 @@ class AccuWeatherController(object):
     Controller for interacting with the Open Weather Map API.
     """
     # For now, hardcode the London city id. In the future, integrate with the
-    # accuweather locations endpoint.
+    # weatherservice locations endpoint.
     LONDON_CITY_ID = '328328'
     LOCATION_NAME = 'London, UK'
 
-    API_URL = 'http://dataservice.accuweather.com'
+    API_URL = 'http://dataservice.weatherservice.com'
 
     CURRENT_CONDITIONS_ENDPOINT = 'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
     HOURLY_FORECAST_ENDPOINT = 'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'

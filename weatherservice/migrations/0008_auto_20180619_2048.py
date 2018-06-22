@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accuweather', '0007_remove_forecastdatapoint_precipitation_probability'),
+        ('weatherservice', '0007_remove_forecastdatapoint_precipitation_probability'),
     ]
 
     operations = [

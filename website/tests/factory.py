@@ -2,7 +2,7 @@ import datetime
 import factory
 from django.utils import timezone
 
-from accuweather.models import ForecastDataPoint
+from weatherservice.models import ForecastDataPoint
 
 
 class DailyForecastDataPointFactory(factory.DjangoModelFactory):

@@ -3,7 +3,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.utils import timezone
 
-from accuweather.controller import AccuWeatherController
+from weatherservice.controller import AccuWeatherController
 
 
 class Command(BaseCommand):
