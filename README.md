@@ -1,6 +1,6 @@
 # Another Weather Progressive Web App
 
-[![circle ci status](https://circleci.com/gh/jgasteiz/weather-pwa.svg?style=shield&circle-token=:circle-token)](https://circleci.com/gh/jgasteiz/weather-pwa/tree/master)
+[![travis ci status](https://travis-ci.org/jgasteiz/weather-pwa.svg?branch=master)](https://travis-ci.org/jgasteiz/weather-pwa)
 
 
 ## Resources
