@@ -1,6 +1,7 @@
 language: python
 python:
   - "3.6"
+
 env:
   global:
     - SECRET_KEY=1234
@@ -8,5 +9,12 @@ env:
     - PIPENV_VENV_IN_PROJECT=1
     - PIPENV_IGNORE_VIRTUALENVS=1
 
+services:
+  - postgresql
+
 install: make setup
+
+before_script:
+  - psql -c 'create database travis_ci_test;' -U postgres
+
 script: make test

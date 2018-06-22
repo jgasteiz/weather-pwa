@@ -3,8 +3,8 @@ from .settings import *
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'circle_test',
-        'USER': 'root',
+        'NAME': 'travis_ci_test',
+        'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '',
     }
