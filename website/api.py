@@ -2,8 +2,8 @@ from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from accuweather.models import ForecastDataPoint
-from accuweather.serializers import ForecastDataPointSerializer
+from weatherservice.models import ForecastDataPoint
+from weatherservice.serializers import ForecastDataPointSerializer
 
 
 @api_view(['GET'])

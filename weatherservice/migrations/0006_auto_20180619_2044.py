@@ -6,7 +6,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('accuweather', '0005_auto_20180619_1856'),
+        ('weatherservice', '0005_auto_20180619_1856'),
     ]
 
     operations = [

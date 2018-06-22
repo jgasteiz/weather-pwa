@@ -40,7 +40,7 @@ export default class Home extends React.Component {
                         dataPoints={this.state.hourlyForecast}
                     />
                     <Forecast
-                        forecastTitle="Next 4 days"
+                        forecastTitle="Next 5 days"
                         forecastType="date"
                         dataPoints={this.state.dailyForecast}
                     />

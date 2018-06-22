@@ -5,7 +5,6 @@ from django.views.decorators.cache import cache_control
 from django.views.generic import TemplateView
 
 from website import api
-from website import tasks
 from website import views
 
 
@@ -18,9 +17,6 @@ urlpatterns = [
 
     # API
     url(r'^api/forecast', api.forecast, name='api_forecast'),
-
-    # Tasks
-    url(r'^tasks/forecast', tasks.fetch_forecast, name='fetch_forecast'),
 
     # Admin
     path('admin/', admin.site.urls),

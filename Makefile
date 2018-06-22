@@ -3,8 +3,19 @@ install:
 	pipenv install
 
 run:
-	yarn webpack
 	pipenv run -- python manage.py runserver
+
+migrate:
+	pipenv run -- python manage.py migrate
+
+fetchcurrentweather:
+	pipenv run -- python manage.py fetchcurrentweather
+
+fetchhourlyforecast:
+	pipenv run -- python manage.py fetchhourlyforecast
+
+fetchdailyforecast:
+	pipenv run -- python manage.py fetchdailyforecast
 
 test:
 	pipenv run -- pytest -s -v
