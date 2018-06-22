@@ -96,9 +96,9 @@ class WeatherServiceController(object):
     def __init__(self):
         self.api_key = os.environ.get('ACCUWEATHER_API_KEY')
 
-    def fetch_current_weather(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
+    def get_current_weather(self, city_id):
         """
-        Create or update a ForecastDataPoint for the current weather.
+        Get the current weather data from AccuWeather.
         """
         current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
         res = requests.get(current_conditions_endpoint)
@@ -106,9 +106,38 @@ class WeatherServiceController(object):
             error_msg = "Couldn't fetch the current weather. Reason: %s" % res.json()
             logging.error(error_msg)
             raise Exception(error_msg)
+        return res
 
-        current_conditions_data = res.json()
-        data_point = current_conditions_data[0]
+    def get_hourly_forecast(self, city_id):
+        """
+        Get a forecast for the next 12 hours from AccuWeather.
+        """
+        forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        res = requests.get(forecast_endpoint)
+        if res.status_code != 200:
+            error_msg = "Couldn't fetch the hourly forecast. Reason: %s" % res.json()
+            logging.error(error_msg)
+            raise Exception(error_msg)
+        return res
+
+    def get_daily_forecast(self, city_id):
+        """
+        Get a forecast for the next 5 days from MetaWeather.
+        """
+        forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        res = requests.get(forecast_endpoint)
+        if res.status_code != 200:
+            error_msg = "Couldn't fetch the daily forecast. Reason: %s" % res.json()
+            logging.error(error_msg)
+            raise Exception(error_msg)
+        return res
+
+    def fetch_current_weather(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
+        """
+        Create or update a ForecastDataPoint for the current weather.
+        """
+        current_conditions_data = self.get_current_weather(city_id)
+        data_point = current_conditions_data.json()[0]
         utc_datetime = datetime.fromtimestamp(data_point.get('EpochTime'), tz=pytz.timezone('UTC'))
         data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
         forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
@@ -124,14 +153,7 @@ class WeatherServiceController(object):
         """
         Create or update a bunch of ForecastDataPoint for the next 12 hours.
         """
-        forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        res = requests.get(forecast_endpoint)
-        if res.status_code != 200:
-            error_msg = "Couldn't fetch the hourly forecast. Reason: %s" % res.json()
-            logging.error(error_msg)
-            raise Exception(error_msg)
-
-        forecast_data = res.json()
+        forecast_data = self.get_hourly_forecast(city_id).json()
         for data_point in forecast_data:
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
@@ -148,14 +170,7 @@ class WeatherServiceController(object):
         """
         Create or update a bunch of ForecastDataPoint for the next 5 days.
         """
-        forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        res = requests.get(forecast_endpoint)
-        if res.status_code != 200:
-            error_msg = "Couldn't fetch the daily forecast. Reason: %s" % res.json()
-            logging.error(error_msg)
-            raise Exception(error_msg)
-
-        forecast_data = res.json()
+        forecast_data = self.get_daily_forecast(city_id).json()
         consolidated_weather = forecast_data.get('consolidated_weather')
         for data_point in consolidated_weather:
             utc_datetime = datetime.strptime(data_point.get('applicable_date'), '%Y-%m-%d')
