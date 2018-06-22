@@ -11,6 +11,7 @@ whitenoise = "*"
 ipdb = "*"
 dj-database-url = "*"
 djangorestframework = "*"
+pytest-django = "*"
 
 [requires]
 python_version = "3.6"

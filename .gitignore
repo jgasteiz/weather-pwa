@@ -14,3 +14,4 @@ db.sqlite3
 # Code editors
 .idea/
 .vscode/
+/.pytest_cache
