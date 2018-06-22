@@ -9,22 +9,36 @@ from django.conf import settings
 from .models import ForecastDataPoint
 
 
-class AccuWeatherController(object):
+class WeatherServiceController(object):
     """
     Controller for interacting with the Open Weather Map API.
     """
     # For now, hardcode the London city id. In the future, integrate with the
     # weatherservice locations endpoint.
-    LONDON_CITY_ID = '328328'
+    ACCUWEATHER_LONDON_CITY_ID = '328328'
+    METAWEATHER_LONDON_CITY_ID = '44418'
     LOCATION_NAME = 'London, UK'
 
-    API_URL = 'http://dataservice.weatherservice.com'
+    ACCUWEATHER_API_URL = 'http://dataservice.accuweather.com'
+    METAWEATHER_API_URL = 'https://www.metaweather.com'
 
-    CURRENT_CONDITIONS_ENDPOINT = 'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
-    HOURLY_FORECAST_ENDPOINT = 'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
-    DAILY_FORECAST_ENDPOINT = 'forecasts/v1/daily/5day/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    # Accuweather endpoints
+    CURRENT_CONDITIONS_ENDPOINT = '%s/%s' % (
+        ACCUWEATHER_API_URL,
+        'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    )
+    HOURLY_FORECAST_ENDPOINT = '%s/%s' % (
+        ACCUWEATHER_API_URL,
+        'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
+    )
 
-    ICON_MAP = {
+    # MetaWeather endpoints
+    DAILY_FORECAST_ENDPOINT = '%s/%s' % (
+        METAWEATHER_API_URL,
+        'api/location/{city_id}/'
+    )
+
+    ACCUWEATHER_ICON_MAP = {
         '1': 'wi-day-sunny',
         '2': 'wi-day-sunny',
         '3': 'wi-day-sunny',
@@ -66,17 +80,28 @@ class AccuWeatherController(object):
         '43': 'wi-night-sleet',
         '44': 'wi-night-snow',
     }
+    METAWEATHER_ICON_MAP = {
+        'sn': 'wi-snow',
+        'sl': 'wi-sleet',
+        'h': 'wi-hail',
+        't': 'wi-day-thunderstorm',
+        'hr': 'wi-rain',
+        'lr': 'wi-raindrops',
+        's': 'wi-showers',
+        'hc': 'wi-cloudy',
+        'lc': 'wi-cloud',
+        'c': 'wi-day-sunny',
+    }
 
     def __init__(self):
         self.api_key = os.environ.get('ACCUWEATHER_API_KEY')
 
-    def fetch_current_weather(self, city_id=LONDON_CITY_ID):
+    def fetch_current_weather(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
         """
         Create or update a ForecastDataPoint for the current weather.
         """
         current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        current_conditions_url = '%s/%s' % (self.API_URL, current_conditions_endpoint)
-        res = requests.get(current_conditions_url)
+        res = requests.get(current_conditions_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the current weather. Reason: %s" % res.json()
             logging.error(error_msg)
@@ -90,18 +115,17 @@ class AccuWeatherController(object):
         forecast.data_point_type = ForecastDataPoint.CURRENT_CONDITIONS
         forecast.location_name = self.LOCATION_NAME
         forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
-        forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('WeatherIcon')))
+        forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
         forecast.weather_icon_name = data_point.get('WeatherText')
         forecast.mobile_link = data_point.get('MobileLink')
         forecast.save()
 
-    def fetch_hourly_forecast(self, city_id=LONDON_CITY_ID):
+    def fetch_hourly_forecast(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
         """
         Create or update a bunch of ForecastDataPoint for the next 12 hours.
         """
         forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
-        res = requests.get(forecast_url)
+        res = requests.get(forecast_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the hourly forecast. Reason: %s" % res.json()
             logging.error(error_msg)
@@ -115,33 +139,32 @@ class AccuWeatherController(object):
             forecast.data_point_type = ForecastDataPoint.HOURLY_FORECAST
             forecast.location_name = self.LOCATION_NAME
             forecast.temperature = data_point.get('Temperature').get('Value')
-            forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('WeatherIcon')))
+            forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
             forecast.weather_icon_name = data_point.get('IconPhrase')
             forecast.mobile_link = data_point.get('MobileLink')
             forecast.save()
 
-    def fetch_daily_forecast(self, city_id=LONDON_CITY_ID):
+    def fetch_daily_forecast(self, city_id=METAWEATHER_LONDON_CITY_ID):
         """
         Create or update a bunch of ForecastDataPoint for the next 5 days.
         """
         forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
-        forecast_url = '%s/%s' % (self.API_URL, forecast_endpoint)
-        res = requests.get(forecast_url)
+        res = requests.get(forecast_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the daily forecast. Reason: %s" % res.json()
             logging.error(error_msg)
             raise Exception(error_msg)
 
         forecast_data = res.json()
-        for data_point in forecast_data.get('DailyForecasts'):
-            utc_datetime = datetime.fromtimestamp(data_point.get('EpochDate'), tz=pytz.timezone('UTC'))
+        consolidated_weather = forecast_data.get('consolidated_weather')
+        for data_point in consolidated_weather:
+            utc_datetime = datetime.strptime(data_point.get('applicable_date'), '%Y-%m-%d')
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
             forecast.data_point_type = ForecastDataPoint.DAILY_FORECAST
             forecast.location_name = self.LOCATION_NAME
-            forecast.temperature_min = data_point.get('Temperature').get('Minimum').get('Value')
-            forecast.temperature_max = data_point.get('Temperature').get('Maximum').get('Value')
-            forecast.weather_icon = self.ICON_MAP.get(str(data_point.get('Day').get('Icon')))
-            forecast.weather_icon_name = data_point.get('Day').get('IconPhrase')
-            forecast.mobile_link = data_point.get('MobileLink')
+            forecast.temperature_min = int(data_point.get('min_temp'))
+            forecast.temperature_max = int(data_point.get('max_temp'))
+            forecast.weather_icon = self.METAWEATHER_ICON_MAP.get(data_point.get('weather_state_abbr'))
+            forecast.weather_icon_name = data_point.get('weather_state_name')
             forecast.save()
