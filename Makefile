@@ -3,8 +3,10 @@ install:
 	pipenv install
 
 run:
-	yarn webpack
 	pipenv run -- python manage.py runserver
+
+migrate:
+	pipenv run -- python manage.py migrate
 
 test:
 	pipenv run -- pytest -s -v
