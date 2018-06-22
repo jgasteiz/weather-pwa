@@ -3,6 +3,8 @@ python:
   - "3.6"
 env:
   global:
+    - SECRET_KEY=1234
+    - ACCUWEATHER_API_KEY=1234
     - PIPENV_VENV_IN_PROJECT=1
     - PIPENV_IGNORE_VIRTUALENVS=1
 
