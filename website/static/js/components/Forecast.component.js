@@ -9,10 +9,17 @@ export default class Forecast extends React.Component {
         const forecastDataPoints = this.props.dataPoints.map((data, index) => {
 
             const keyValue = data[this._getKeyValueKey()];
-            const topValue1 = data[this._getTopValue1Key()];
-            const topValue2 = data[this._getTopValue2Key()];
+            let topValue1 = data[this._getTopValue1Key()];
+            let topValue2 = data[this._getTopValue2Key()];
             const bottomValue = data[this._getBottomValueKey()];
             const icon = data[Forecast._getIconKey()];
+
+            if (this.props.forecastType === 'date') {
+                topValue1 = `Max: ${topValue1}°C`;
+                topValue2 = `Min: ${topValue2}°C`;
+            } else {
+                topValue1 = `${topValue1}°C`;
+            }
 
             return (
                 <DataPoint
