@@ -8,5 +8,14 @@ run:
 migrate:
 	pipenv run -- python manage.py migrate
 
+fetchcurrentweather:
+	pipenv run -- python manage.py fetchcurrentweather
+
+fetchhourlyforecast:
+	pipenv run -- python manage.py fetchhourlyforecast
+
+fetchdailyforecast:
+	pipenv run -- python manage.py fetchdailyforecast
+
 test:
 	pipenv run -- pytest -s -v
