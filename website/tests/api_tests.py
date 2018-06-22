@@ -5,7 +5,7 @@ from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
 
-from . import factory
+from weatherservice.tests import factory
 
 
 @pytest.mark.django_db
