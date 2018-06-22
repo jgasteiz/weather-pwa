@@ -1,11 +1,9 @@
-setup:
+install:
 	pip install pipenv
 	pipenv install
 
-activate:
-	pipenv shell
-
 run:
+	yarn webpack
 	pipenv run -- python manage.py runserver
 
 test:
