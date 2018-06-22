@@ -1,4 +1,4 @@
-from django.conf.urls import include, url
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 from django.views.decorators.cache import cache_control
@@ -13,12 +13,22 @@ admin.autodiscover()
 
 
 urlpatterns = [
+    # Views
     url(r'^$', views.index, name='index'),
-    url(r'^api/forecast', api.forecast, name='forecast'),
+
+    # API
+    url(r'^api/forecast', api.forecast, name='api_forecast'),
+
+    # Tasks
     url(r'^tasks/forecast', tasks.fetch_forecast, name='fetch_forecast'),
-    url(r'^service-worker.js', cache_control(max_age=2592000)(TemplateView.as_view(
-        template_name="service-worker.js",
-        content_type='application/javascript',
-    )), name='service-worker.js'),
+
+    # Admin
     path('admin/', admin.site.urls),
+
+    # Service worker url hack.
+    url(r'^service-worker.js',
+        cache_control(max_age=2592000)(TemplateView.as_view(
+            template_name="service-worker.js",
+            content_type='application/javascript',
+        )), name='service-worker.js'),
 ]
