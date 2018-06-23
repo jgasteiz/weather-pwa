@@ -6,7 +6,7 @@ import pytz
 import requests
 from django.conf import settings
 
-from .models import ForecastDataPoint
+from .models import ForecastDataPoint, Location
 
 
 class WeatherServiceController(object):
@@ -132,15 +132,19 @@ class WeatherServiceController(object):
             raise Exception(error_msg)
         return res
 
-    def fetch_current_weather(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
+    def fetch_current_weather(self):
         """
         Create or update a ForecastDataPoint for the current weather.
         """
-        current_conditions_data = self.get_current_weather(city_id)
+        active_location = Location.get_active_location()
+        current_conditions_data = self.get_current_weather(active_location.accuweather_location_id)
         data_point = current_conditions_data.json()[0]
         utc_datetime = datetime.fromtimestamp(data_point.get('EpochTime'), tz=pytz.timezone('UTC'))
         data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
-        forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+        forecast, _ = ForecastDataPoint.objects.get_or_create(
+            location=active_location,
+            datetime=data_point_datetime
+        )
         forecast.data_point_type = ForecastDataPoint.CURRENT_CONDITIONS
         forecast.location_name = self.LOCATION_NAME
         forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
@@ -149,15 +153,19 @@ class WeatherServiceController(object):
         forecast.mobile_link = data_point.get('MobileLink')
         forecast.save()
 
-    def fetch_hourly_forecast(self, city_id=ACCUWEATHER_LONDON_CITY_ID):
+    def fetch_hourly_forecast(self):
         """
         Create or update a bunch of ForecastDataPoint for the next 12 hours.
         """
-        forecast_data = self.get_hourly_forecast(city_id).json()
+        active_location = Location.get_active_location()
+        forecast_data = self.get_hourly_forecast(active_location.accuweather_location_id).json()
         for data_point in forecast_data:
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
-            forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+            forecast, _ = ForecastDataPoint.objects.get_or_create(
+                location=active_location,
+                datetime=data_point_datetime
+            )
             forecast.data_point_type = ForecastDataPoint.HOURLY_FORECAST
             forecast.location_name = self.LOCATION_NAME
             forecast.temperature = data_point.get('Temperature').get('Value')
@@ -166,16 +174,20 @@ class WeatherServiceController(object):
             forecast.mobile_link = data_point.get('MobileLink')
             forecast.save()
 
-    def fetch_daily_forecast(self, city_id=METAWEATHER_LONDON_CITY_ID):
+    def fetch_daily_forecast(self):
         """
         Create or update a bunch of ForecastDataPoint for the next 5 days.
         """
-        forecast_data = self.get_daily_forecast(city_id).json()
+        active_location = Location.get_active_location()
+        forecast_data = self.get_daily_forecast(active_location.metaweather_location_id).json()
         consolidated_weather = forecast_data.get('consolidated_weather')
         for data_point in consolidated_weather:
             utc_datetime = datetime.strptime(data_point.get('applicable_date'), '%Y-%m-%d')
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
-            forecast, _ = ForecastDataPoint.objects.get_or_create(datetime=data_point_datetime)
+            forecast, _ = ForecastDataPoint.objects.get_or_create(
+                location=active_location,
+                datetime=data_point_datetime
+            )
             forecast.data_point_type = ForecastDataPoint.DAILY_FORECAST
             forecast.location_name = self.LOCATION_NAME
             forecast.temperature_min = int(data_point.get('min_temp'))

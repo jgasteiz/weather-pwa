@@ -3,6 +3,23 @@ from django.conf import settings
 from django.db import models
 
 
+class Location(models.Model):
+    location_name = models.CharField(max_length=64)
+    accuweather_location_id = models.CharField(max_length=64, blank=True)
+    metaweather_location_id = models.CharField(max_length=64, blank=True)
+    # HACK: for now, this will determine which is the active location in the UI.
+    is_active = models.BooleanField(default=False)
+
+    def __str__(self):
+        return '%s | Active: %s' % (self.location_name, self.is_active)
+
+    @classmethod
+    def get_active_location(cls):
+        active_locations = cls.objects.filter(is_active=True)
+        assert active_locations.exists()
+        return active_locations.first()
+
+
 class ForecastDataPoint(models.Model):
     HOURLY_FORECAST = 'HOURLY_FORECAST'
     DAILY_FORECAST = 'DAILY_FORECAST'
@@ -13,6 +30,7 @@ class ForecastDataPoint(models.Model):
         (CURRENT_CONDITIONS, 'Current conditions'),
     )
 
+    location = models.ForeignKey(Location, null=True, on_delete=models.CASCADE)
     datetime = models.DateTimeField()
     location_name = models.CharField(max_length=128, blank=True)
     temperature = models.FloatField(null=True, default=0)

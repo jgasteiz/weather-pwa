@@ -2,13 +2,15 @@ from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 
-from weatherservice.models import ForecastDataPoint
+from weatherservice.models import ForecastDataPoint, Location
 from weatherservice.serializers import ForecastDataPointSerializer
 
 
 @api_view(['GET'])
 def forecast(request):
+    active_location = Location.get_active_location()
     current_conditions_qs = ForecastDataPoint.objects.filter(
+        location=active_location,
         data_point_type=ForecastDataPoint.CURRENT_CONDITIONS
     )
     current_conditions = {}
@@ -17,12 +19,14 @@ def forecast(request):
         current_conditions = current_conditions_serializer.data
 
     hourly_forecast_qs = ForecastDataPoint.objects.filter(
+        location=active_location,
         data_point_type=ForecastDataPoint.HOURLY_FORECAST,
         datetime__gt=timezone.now()
     )
     hourly_forecast_serializer = ForecastDataPointSerializer(hourly_forecast_qs, many=True)
 
     daily_forecast_qs = ForecastDataPoint.objects.filter(
+        location=active_location,
         data_point_type=ForecastDataPoint.DAILY_FORECAST,
         datetime__gt=timezone.now()
     )
