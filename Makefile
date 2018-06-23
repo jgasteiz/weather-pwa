@@ -18,4 +18,4 @@ fetchdailyforecast:
 	pipenv run -- python manage.py fetchdailyforecast
 
 test:
-	pipenv run -- pytest -s -v
+	pipenv run -- py.test -s -v --cov-report html --cov-report term --cov=weather --cov=weatherservice --cov=website
