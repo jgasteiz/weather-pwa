@@ -9,7 +9,21 @@ from faker import Faker
 from faker.providers import BaseProvider
 
 from weatherservice.controller import WeatherServiceController
-from weatherservice.models import ForecastDataPoint
+from weatherservice.models import ForecastDataPoint, Location
+
+
+class ActiveLocationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Location
+
+    is_active = True
+
+
+class LocationFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Location
+
+    is_active = False
 
 
 class DailyForecastDataPointFactory(factory.DjangoModelFactory):

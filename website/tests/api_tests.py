@@ -1,6 +1,8 @@
 import datetime
 
 import pytest
+import pytz
+from django.conf import settings
 from django.test import Client
 from django.urls import reverse
 from django.utils import timezone
@@ -10,17 +12,18 @@ from weatherservice.tests import factory
 
 @pytest.mark.django_db
 def test_forecast_api_basic():
+    active_location = factory.ActiveLocationFactory(name='London, UK')
     # Create a few FactoryDataPoints
     factory.CurrentConditionsForecastDataPointFactory(
-        location_name='London, UK',
+        location=active_location,
         temperature=20
     )
     factory.HourlyForecastDataPointFactory(
-        location_name='Bristol, UK',
+        location=active_location,
         temperature=21
     )
     factory.DailyForecastDataPointFactory(
-        location_name='San Francisco, USA',
+        location=active_location,
         temperature=22
     )
 
@@ -39,17 +42,20 @@ def test_forecast_api_basic():
     assert current_conditions_json.get('temperature') == 20.0
     assert current_conditions_json.get('location_name') == 'London, UK'
     assert hour_forecast_json[0].get('temperature') == 21.0
-    assert hour_forecast_json[0].get('location_name') == 'Bristol, UK'
+    assert hour_forecast_json[0].get('location_name') == 'London, UK'
     assert day_forecast_json[0].get('temperature') == 22.0
-    assert day_forecast_json[0].get('location_name') == 'San Francisco, USA'
+    assert day_forecast_json[0].get('location_name') == 'London, UK'
 
 
 @pytest.mark.django_db
 def test_forecast_api_ignore_past_datapoints():
+    active_location = factory.ActiveLocationFactory(name='London, UK')
     factory.HourlyForecastDataPointFactory(
+        location=active_location,
         datetime=timezone.now() - datetime.timedelta(hours=2)
     )
     factory.DailyForecastDataPointFactory(
+        location=active_location,
         datetime=timezone.now() - datetime.timedelta(days=2)
     )
 
@@ -69,16 +75,18 @@ def test_forecast_api_ignore_past_datapoints():
 
 @pytest.mark.django_db
 def test_forecast_api_latest_current_conditions():
+    active_location = factory.ActiveLocationFactory(name='London, UK')
+    five_mins_ago = timezone.now() - datetime.timedelta(minutes=5)
     factory.CurrentConditionsForecastDataPointFactory(
-        location_name='15 minutes ago',
+        location=active_location,
         datetime=timezone.now() - datetime.timedelta(minutes=10)
     )
     factory.CurrentConditionsForecastDataPointFactory(
-        location_name='5 minutes ago',
-        datetime=timezone.now() - datetime.timedelta(minutes=5)
+        location=active_location,
+        datetime=five_mins_ago
     )
     factory.CurrentConditionsForecastDataPointFactory(
-        location_name='10 minutes ago',
+        location=active_location,
         datetime=timezone.now() - datetime.timedelta(minutes=10)
     )
 
@@ -89,4 +97,4 @@ def test_forecast_api_latest_current_conditions():
 
     # Expect a json with the three data points.
     current_conditions_json = response.json().get('current_conditions')
-    assert current_conditions_json.get('location_name') == '5 minutes ago'
+    assert current_conditions_json.get('datapoint_time') == five_mins_ago.astimezone(pytz.timezone(settings.TIME_ZONE)).strftime('%B %d, %H:%M')
