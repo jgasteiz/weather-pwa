@@ -44,10 +44,14 @@ class ForecastDataPoint(models.Model):
         ordering = ['datetime']
 
     def __repr__(self):
-        return '%s | %s | %s' % (self.location.name, self.datetime, self.temperature)
+        return '%s | %s | %s' % (self.location_name, self.datetime, self.temperature)
 
     def __str__(self):
-        return '%s | %s | %s' % (self.location.name, self.datetime, self.temperature)
+        return '%s | %s | %s' % (self.location_name, self.datetime, self.temperature)
+
+    @property
+    def location_name(self):
+        return self.location.name if self.location else 'N/A'
 
     @property
     def localized_datetime(self):
