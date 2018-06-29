@@ -17,7 +17,6 @@ class WeatherServiceController(object):
     # weatherservice locations endpoint.
     ACCUWEATHER_LONDON_CITY_ID = '328328'
     METAWEATHER_LONDON_CITY_ID = '44418'
-    LOCATION_NAME = 'London, UK'
 
     ACCUWEATHER_API_URL = 'http://dataservice.accuweather.com'
     METAWEATHER_API_URL = 'https://www.metaweather.com'
@@ -145,7 +144,6 @@ class WeatherServiceController(object):
             location=active_location,
             datetime=data_point_datetime,
             data_point_type=ForecastDataPoint.CURRENT_CONDITIONS,
-            location_name=self.LOCATION_NAME,
         )
         forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
         forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
@@ -166,7 +164,6 @@ class WeatherServiceController(object):
                 location=active_location,
                 datetime=data_point_datetime.replace(minute=0, second=0),
                 data_point_type=ForecastDataPoint.HOURLY_FORECAST,
-                location_name=self.LOCATION_NAME,
             )
             forecast.temperature = data_point.get('Temperature').get('Value')
             forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
@@ -188,7 +185,6 @@ class WeatherServiceController(object):
                 location=active_location,
                 datetime=data_point_datetime.replace(hour=0, minute=0, second=0),
                 data_point_type=ForecastDataPoint.DAILY_FORECAST,
-                location_name=self.LOCATION_NAME,
             )
             forecast.temperature_min = int(data_point.get('min_temp'))
             forecast.temperature_max = int(data_point.get('max_temp'))

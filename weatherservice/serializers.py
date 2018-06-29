@@ -7,6 +7,7 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
     datapoint_hour = serializers.SerializerMethodField()
     datapoint_date = serializers.SerializerMethodField()
     datapoint_time = serializers.SerializerMethodField()
+    location_name = serializers.SerializerMethodField()
 
     class Meta:
         model = ForecastDataPoint
@@ -32,3 +33,6 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
 
     def get_datapoint_time(self, obj):
         return obj.localized_datetime.strftime('%B %d, %H:%M')
+
+    def get_location_name(self, obj):
+        return obj.location.name
