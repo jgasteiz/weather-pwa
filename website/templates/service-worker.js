@@ -5,7 +5,7 @@
     const cacheWhiteList = [ASSETS_CACHE, DATA_CACHE];
     const urlsToCache = [
         '/',
-        'http://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css',
+        'https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css',
         'static/css/weather-icons.min.css',
         'static/css/weather-icons-wind.min.css',
         'static/css/weather.css',
