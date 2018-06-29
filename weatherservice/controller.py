@@ -143,10 +143,10 @@ class WeatherServiceController(object):
         data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
         forecast, _ = ForecastDataPoint.objects.get_or_create(
             location=active_location,
-            datetime=data_point_datetime
+            datetime=data_point_datetime,
+            data_point_type=ForecastDataPoint.CURRENT_CONDITIONS,
+            location_name=self.LOCATION_NAME,
         )
-        forecast.data_point_type = ForecastDataPoint.CURRENT_CONDITIONS
-        forecast.location_name = self.LOCATION_NAME
         forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
         forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
         forecast.weather_icon_name = data_point.get('WeatherText')
@@ -164,10 +164,10 @@ class WeatherServiceController(object):
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(
                 location=active_location,
-                datetime=data_point_datetime
+                datetime=data_point_datetime.replace(minute=0, second=0),
+                data_point_type=ForecastDataPoint.HOURLY_FORECAST,
+                location_name=self.LOCATION_NAME,
             )
-            forecast.data_point_type = ForecastDataPoint.HOURLY_FORECAST
-            forecast.location_name = self.LOCATION_NAME
             forecast.temperature = data_point.get('Temperature').get('Value')
             forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
             forecast.weather_icon_name = data_point.get('IconPhrase')
@@ -186,10 +186,10 @@ class WeatherServiceController(object):
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(
                 location=active_location,
-                datetime=data_point_datetime
+                datetime=data_point_datetime.replace(hour=0, minute=0, second=0),
+                data_point_type=ForecastDataPoint.DAILY_FORECAST,
+                location_name=self.LOCATION_NAME,
             )
-            forecast.data_point_type = ForecastDataPoint.DAILY_FORECAST
-            forecast.location_name = self.LOCATION_NAME
             forecast.temperature_min = int(data_point.get('min_temp'))
             forecast.temperature_max = int(data_point.get('max_temp'))
             forecast.weather_icon = self.METAWEATHER_ICON_MAP.get(data_point.get('weather_state_abbr'))
