@@ -57,8 +57,11 @@ class WeatherFakerProvider(BaseProvider):
     def get_weather_text(self):
         return choice(['Sunny', 'Fallout', 'Rainy', 'Smog', 'Thunderstorm'])
 
-    def get_weather_icon(self):
+    def get_accuweather_icon(self):
         return choice([int(icon) for icon in WeatherServiceController.ACCUWEATHER_ICON_MAP.keys()])
+
+    def get_openweathermap_icon(self):
+        return choice([icon for icon in WeatherServiceController.OPENWEATHERMAP_ICON_MAP.keys()])
 
     def get_temperature(self):
         return float(random.randint(-40, 40))
@@ -68,20 +71,18 @@ class CurrentWeatherResponseFaker(object):
     def get_current_weather_response(self):
         faker = Faker()
         faker.add_provider(WeatherFakerProvider)
-        return [
-            {
-                "EpochTime": faker.get_epoch_time(),
-                "WeatherText": faker.get_weather_text(),
-                "WeatherIcon": faker.get_weather_icon(),
-                "Temperature": {
-                    "Metric": {
-                        "Value": faker.get_temperature(),
-                        "Unit": "C"
-                    }
-                },
-                "MobileLink": "http://m.accuweather.com/en/gb/london/ec4a-2/current-weather/328328",
-            }
-        ]
+        return {
+            "weather": [
+                {
+                    "main": faker.get_weather_text(),
+                    "icon": faker.get_openweathermap_icon()
+                }
+            ],
+            "main": {
+                "temp": faker.get_temperature(),
+            },
+            "dt": faker.get_epoch_time(),
+        }
 
     def get_hourly_forecast_response(self):
         pass
