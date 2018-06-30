@@ -4,7 +4,7 @@ from weatherservice.controller import WeatherServiceController
 
 
 class Command(BaseCommand):
-    help = 'Fetch the latest forecast data.'
+    help = 'Fetch the latest 5 day forecast data.'
 
     def handle(self, *args, **kwargs):
         forecast_controller = WeatherServiceController()
