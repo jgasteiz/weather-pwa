@@ -13,29 +13,9 @@ class WeatherServiceController(object):
     """
     Controller for interacting with the Open Weather Map API.
     """
-    # For now, hardcode the London city id. In the future, integrate with the
-    # weatherservice locations endpoint.
-    ACCUWEATHER_LONDON_CITY_ID = '328328'
-    METAWEATHER_LONDON_CITY_ID = '44418'
-
-    ACCUWEATHER_API_URL = 'http://dataservice.accuweather.com'
-    METAWEATHER_API_URL = 'https://www.metaweather.com'
-
-    # Accuweather endpoints
-    CURRENT_CONDITIONS_ENDPOINT = '%s/%s' % (
-        ACCUWEATHER_API_URL,
-        'currentconditions/v1/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
-    )
-    HOURLY_FORECAST_ENDPOINT = '%s/%s' % (
-        ACCUWEATHER_API_URL,
-        'forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
-    )
-
-    # MetaWeather endpoints
-    DAILY_FORECAST_ENDPOINT = '%s/%s' % (
-        METAWEATHER_API_URL,
-        'api/location/{city_id}/'
-    )
+    CURRENT_CONDITIONS_ENDPOINT = 'https://api.openweathermap.org/data/2.5/weather?id={city_id}&appid={api_key}&units=metric'
+    DAILY_FORECAST_ENDPOINT = 'https://www.metaweather.com/api/location/{city_id}/'
+    HOURLY_FORECAST_ENDPOINT = 'http://dataservice.accuweather.com/forecasts/v1/hourly/12hour/{city_id}?apikey={api_key}&units=metric&language=en-gb&metric=true'
 
     ACCUWEATHER_ICON_MAP = {
         '1': 'wi-day-sunny',
@@ -91,15 +71,37 @@ class WeatherServiceController(object):
         'lc': 'wi-cloud',
         'c': 'wi-day-sunny',
     }
+    OPENWEATHERMAP_ICON_MAP = {
+        '01d': 'wi-day-sunny',
+        '02d': 'wi-day-cloudy',
+        '03d': 'wi-cloudy',
+        '04d': 'wi-cloudy',
+        '09d': 'wi-rain',
+        '10d': 'wi-day-rain',
+        '11d': 'wi-thunderstorm',
+        '13d': 'wi-snow',
+        '50d': 'wi-fog',
+        '01n': 'wi-night-clear',
+        '02n': 'wi-night-cloudy',
+        '03n': 'wi-cloudy',
+        '04n': 'wi-cloudy',
+        '09n': 'wi-rain',
+        '10n': 'wi-night-rain',
+        '11n': 'wi-night-alt-thunderstorm',
+        '13n': 'wi-snow',
+        '50n': 'wi-fog',
+    }
 
     def __init__(self):
-        self.api_key = os.environ.get('ACCUWEATHER_API_KEY')
+        self.accuweather_api_key = os.environ.get("ACCUWEATHER_API_KEY")
+        self.openweathermap_api_key = os.environ.get("OPENMAPWEATHER_API_KEY")
+        self.active_location = Location.get_active_location()
 
     def get_current_weather(self, city_id):
         """
         Get the current weather data from AccuWeather.
         """
-        current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        current_conditions_endpoint = self.CURRENT_CONDITIONS_ENDPOINT.format(city_id=city_id, api_key=self.openweathermap_api_key)
         res = requests.get(current_conditions_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the current weather. Reason: %s" % res.json()
@@ -111,7 +113,7 @@ class WeatherServiceController(object):
         """
         Get a forecast for the next 12 hours from AccuWeather.
         """
-        forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        forecast_endpoint = self.HOURLY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.accuweather_api_key)
         res = requests.get(forecast_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the hourly forecast. Reason: %s" % res.json()
@@ -123,7 +125,7 @@ class WeatherServiceController(object):
         """
         Get a forecast for the next 5 days from MetaWeather.
         """
-        forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id, api_key=self.api_key)
+        forecast_endpoint = self.DAILY_FORECAST_ENDPOINT.format(city_id=city_id)
         res = requests.get(forecast_endpoint)
         if res.status_code != 200:
             error_msg = "Couldn't fetch the daily forecast. Reason: %s" % res.json()
@@ -135,33 +137,30 @@ class WeatherServiceController(object):
         """
         Create or update a ForecastDataPoint for the current weather.
         """
-        active_location = Location.get_active_location()
-        current_conditions_data = self.get_current_weather(active_location.accuweather_location_id)
-        data_point = current_conditions_data.json()[0]
-        utc_datetime = datetime.fromtimestamp(data_point.get('EpochTime'), tz=pytz.timezone('UTC'))
+        current_conditions_data = self.get_current_weather(self.active_location.openweathermap_location_id)
+        data_point = current_conditions_data.json()
+        utc_datetime = datetime.fromtimestamp(data_point.get('dt'), tz=pytz.timezone('UTC'))
         data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
         forecast, _ = ForecastDataPoint.objects.get_or_create(
-            location=active_location,
+            location=self.active_location,
             datetime=data_point_datetime,
             data_point_type=ForecastDataPoint.CURRENT_CONDITIONS,
         )
-        forecast.temperature = data_point.get('Temperature').get('Metric').get('Value')
-        forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
-        forecast.weather_icon_name = data_point.get('WeatherText')
-        forecast.mobile_link = data_point.get('MobileLink')
+        forecast.temperature = data_point.get('main').get('temp')
+        forecast.weather_icon = self.OPENWEATHERMAP_ICON_MAP.get(data_point.get('weather')[0].get('icon'))
+        forecast.weather_icon_name = data_point.get('weather')[0].get('main')
         forecast.save()
 
     def fetch_hourly_forecast(self):
         """
         Create or update a bunch of ForecastDataPoint for the next 12 hours.
         """
-        active_location = Location.get_active_location()
-        forecast_data = self.get_hourly_forecast(active_location.accuweather_location_id).json()
+        forecast_data = self.get_hourly_forecast(self.active_location.accuweather_location_id).json()
         for data_point in forecast_data:
             utc_datetime = datetime.fromtimestamp(data_point.get('EpochDateTime'), tz=pytz.timezone('UTC'))
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(
-                location=active_location,
+                location=self.active_location,
                 datetime=data_point_datetime.replace(minute=0, second=0),
                 data_point_type=ForecastDataPoint.HOURLY_FORECAST,
             )
@@ -175,14 +174,13 @@ class WeatherServiceController(object):
         """
         Create or update a bunch of ForecastDataPoint for the next 5 days.
         """
-        active_location = Location.get_active_location()
-        forecast_data = self.get_daily_forecast(active_location.metaweather_location_id).json()
+        forecast_data = self.get_daily_forecast(self.active_location.metaweather_location_id).json()
         consolidated_weather = forecast_data.get('consolidated_weather')
         for data_point in consolidated_weather:
             utc_datetime = datetime.strptime(data_point.get('applicable_date'), '%Y-%m-%d')
             data_point_datetime = utc_datetime.astimezone(pytz.timezone(settings.TIME_ZONE))
             forecast, _ = ForecastDataPoint.objects.get_or_create(
-                location=active_location,
+                location=self.active_location,
                 datetime=data_point_datetime.replace(hour=0, minute=0, second=0),
                 data_point_type=ForecastDataPoint.DAILY_FORECAST,
             )

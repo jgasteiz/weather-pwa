@@ -7,6 +7,7 @@ class Location(models.Model):
     name = models.CharField(max_length=64)
     accuweather_location_id = models.CharField(max_length=64, blank=True)
     metaweather_location_id = models.CharField(max_length=64, blank=True)
+    openweathermap_location_id = models.CharField(max_length=64, blank=True)
     # HACK: for now, this will determine which is the active location in the UI.
     is_active = models.BooleanField(default=False)
 
