@@ -1,12 +1,12 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 
-import App from './components/App';
+import Root from './components/Root';
 
 
 if (document.getElementById('weather-app')) {
     ReactDOM.render(
-        <App/>,
+        <Root/>,
         document.getElementById('weather-app')
     );
 }
