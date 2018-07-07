@@ -3,7 +3,7 @@ install:
 	pipenv install
 
 run:
-	pipenv run -- python manage.py runserver
+	pipenv run -- honcho -f Procfile.dev start
 
 migrate:
 	pipenv run -- python manage.py migrate

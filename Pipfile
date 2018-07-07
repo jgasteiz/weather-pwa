@@ -16,6 +16,7 @@ factory-boy = "*"
 faker = "*"
 pytest-cov = "*"
 "psycopg2-binary" = "*"
+honcho = "*"
 
 [requires]
 python_version = "3.6"
