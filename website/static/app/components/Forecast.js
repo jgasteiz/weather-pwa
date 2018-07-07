@@ -1,54 +1,51 @@
 import React from 'react';
 
 import DataPoint from './DataPoint';
+import {PropTypes} from "prop-types";
 
-export default class Forecast extends React.Component {
 
-    render() {
+const Forecast = ({forecastType, forecastTitle, dataPoints}) => {
 
-        const forecastDataPoints = this.props.dataPoints.map((data, index) => {
+    const forecastDataPoints = dataPoints.map((data, index) => {
 
-            const keyValue = data[this._getKeyValueKey()];
-            let topValue1 = data[this._getTopValue1Key()];
-            let topValue2 = data[this._getTopValue2Key()];
-            const bottomValue = data[this._getBottomValueKey()];
-            const icon = data[Forecast._getIconKey()];
+        const keyValue = data[_getKeyValueKey()];
+        let topValue1 = data[_getTopValue1Key()];
+        let topValue2 = data[_getTopValue2Key()];
+        const bottomValue = data[_getBottomValueKey()];
+        const icon = data[_getIconKey()];
 
-            if (this.props.forecastType === 'date') {
-                topValue1 = `Max: ${topValue1}°C`;
-                topValue2 = `Min: ${topValue2}°C`;
-            } else {
-                topValue1 = `${topValue1}°C`;
-            }
-
-            return (
-                <DataPoint
-                    key={keyValue}
-                    dpType={this.props.forecastType}
-                    topValue1={topValue1}
-                    topValue2={topValue2}
-                    bottomValue={bottomValue}
-                    icon={icon}
-                />
-            );
-        });
+        if (forecastType === 'date') {
+            topValue1 = `Max: ${topValue1}°C`;
+            topValue2 = `Min: ${topValue2}°C`;
+        } else {
+            topValue1 = `${topValue1}°C`;
+        }
 
         return (
-            <div className="forecast__group">
-                <h3>{this.props.forecastTitle}</h3>
-                <div className="forecast__data-wrp">
-                    <div className="forecast__data">
-                        {forecastDataPoints}
-                    </div>
+            <DataPoint
+                key={keyValue}
+                dpType={forecastType}
+                topValue1={topValue1}
+                topValue2={topValue2}
+                bottomValue={bottomValue}
+                icon={icon}
+            />
+        );
+    });
+
+    return (
+        <div className="forecast__group">
+            <h3>{forecastTitle}</h3>
+            <div className="forecast__data-wrp">
+                <div className="forecast__data">
+                    {forecastDataPoints}
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 
-    // Private methods
-
-    _getTopValue1Key() {
-        switch (this.props.forecastType) {
+    function _getTopValue1Key () {
+        switch (forecastType) {
             case 'hour':
                 return 'temperature';
             case 'date':
@@ -57,8 +54,8 @@ export default class Forecast extends React.Component {
         return null;
     }
 
-    _getTopValue2Key() {
-        switch (this.props.forecastType) {
+    function _getTopValue2Key() {
+        switch (forecastType) {
             case 'hour':
                 return null;
             case 'date':
@@ -67,8 +64,8 @@ export default class Forecast extends React.Component {
         return null;
     }
 
-    _getBottomValueKey() {
-        switch (this.props.forecastType) {
+    function _getBottomValueKey() {
+        switch (forecastType) {
             case 'hour':
                 return 'datapoint_hour';
             case 'date':
@@ -77,11 +74,19 @@ export default class Forecast extends React.Component {
         return null;
     }
 
-    _getKeyValueKey() {
-        return this._getBottomValueKey();
+    function _getKeyValueKey() {
+        return _getBottomValueKey();
     }
 
-    static _getIconKey() {
+    function _getIconKey() {
         return 'weather_icon';
     }
-}
+};
+
+Forecast.propTypes = {
+    forecastType: PropTypes.string.isRequired,
+    forecastTitle: PropTypes.string.isRequired,
+    dataPoints: PropTypes.array.isRequired,
+};
+
+export default Forecast;
