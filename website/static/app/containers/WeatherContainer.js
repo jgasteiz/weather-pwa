@@ -6,6 +6,9 @@ import {Switch, Route, withRouter} from 'react-router-dom';
 import Weather from '../components/Weather';
 
 import dataPointsActionCreators from '../actions/dataPointsActionCreators.js';
+import AboutPage from "../components/AboutPage";
+import Navigation from "../components/Navigation";
+
 
 export class WeatherContainer extends React.Component {
     componentDidMount() {
@@ -14,16 +17,22 @@ export class WeatherContainer extends React.Component {
     render () {
         const {currentConditions, hourlyForecast, dailyForecast, isLoading} = this.props;
         return (
-            <Switch>
-                <Route exact path="/">
-                    <Weather
-                        currentConditions={currentConditions}
-                        hourlyForecast={hourlyForecast}
-                        dailyForecast={dailyForecast}
-                        isLoading={isLoading}
-                    />
-                </Route>
-            </Switch>
+            <div className="page-content">
+                <Navigation/>
+                <Switch>
+                    <Route exact path="/">
+                        <Weather
+                            currentConditions={currentConditions}
+                            hourlyForecast={hourlyForecast}
+                            dailyForecast={dailyForecast}
+                            isLoading={isLoading}
+                        />
+                    </Route>
+                    <Route exact path="/about">
+                        <AboutPage/>
+                    </Route>
+                </Switch>
+            </div>
         );
     }
 }

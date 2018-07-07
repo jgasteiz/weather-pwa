@@ -12,6 +12,7 @@
 
 ## Resources
 
-- MetaWeather API (5 day forecast): https://www.metaweather.com/
-- Accuweather API (current weather + 12 hour forecast): https://developer.accuweather.com/
+- OpenWeatherMap API (12 hour forecast): https://openweathermap.org
+- MetaWeather API (5 day forecast): https://www.metaweather.com
+- Accuweather API (12 hour forecast): https://accuweather.com
 - Icons: https://erikflowers.github.io/weather-icons/

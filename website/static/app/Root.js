@@ -1,6 +1,6 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {BrowserRouter} from 'react-router-dom';
+import {HashRouter} from 'react-router-dom';
 
 import WeatherContainer from './containers/WeatherContainer';
 
@@ -14,9 +14,9 @@ class Root extends React.Component {
     render() {
         return (
             <Provider store={store}>
-                <BrowserRouter>
+                <HashRouter>
                     <WeatherContainer/>
-                </BrowserRouter>
+                </HashRouter>
             </Provider>
         );
     }
