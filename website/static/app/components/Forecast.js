@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DataPoint from './DataPoint.component';
+import DataPoint from './DataPoint';
 
 export default class Forecast extends React.Component {
 

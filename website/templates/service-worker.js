@@ -1,5 +1,6 @@
 (function () {
     // TODO: take the cache name from a version.
+    const DEBUG = false;
     const ASSETS_CACHE = 'my-site-cache-v2';
     const DATA_CACHE = 'data-cache';
     const cacheWhiteList = [ASSETS_CACHE, DATA_CACHE];
@@ -17,8 +18,16 @@
         'api/forecast/'
     ];
 
+    const logger = {
+        log: function(...message) {
+            if (DEBUG) {
+                console.log(...message);
+            }
+        }
+    };
+
     self.addEventListener('install', function(event) {
-        console.log('WORKER: install event in progress.');
+        logger.log('WORKER: install event in progress.');
         event.waitUntil(
             caches
                 .open(ASSETS_CACHE)
@@ -26,7 +35,7 @@
                     return cache.addAll(urlsToCache);
                 })
                 .then(function() {
-                    console.log('WORKER: static assets added to cache');
+                    logger.log('WORKER: static assets added to cache');
                 })
         );
         event.waitUntil(
@@ -36,7 +45,7 @@
                     return cache.addAll(dataUrlsToCache);
                 })
                 .then(function() {
-                    console.log('WORKER: data added to cache');
+                    logger.log('WORKER: data added to cache');
                 })
         )
     });
@@ -46,7 +55,7 @@
     // - Static assets: Cache first + fallback to network.
     // https://developers.google.com/web/fundamentals/instant-and-offline/offline-cookbook/
     self.addEventListener('fetch', function(event) {
-        console.log('Fetch event for ', event.request.url);
+        logger.log('Fetch event for ', event.request.url);
         event.respondWith(
             caches
                 .open(DATA_CACHE)
@@ -58,22 +67,22 @@
                             if (event.request.url.match(dataUrlsToCache) != null) {
                                 return fetch(event.request)
                                     .then(function (networkResponse) {
-                                        console.log("Updating cache with weather data response.");
+                                        logger.log("Updating cache with weather data response.");
                                         cache.put(event.request, networkResponse.clone());
                                         return networkResponse;
                                     })
                                     .catch(function () {
-                                        console.log("We're offline, return the cached weather data.");
+                                        logger.log("We're offline, return the cached weather data.");
                                         return caches.match(event.request);
                                     })
                             }
 
                             // Otherwise try to return the cached asset and fall to network.
                             if (response) {
-                                console.log("Returning cached static asset");
+                                logger.log("Returning cached static asset");
                                 return response;
                             }
-                            console.log("Cached asset not found, fetching it");
+                            logger.log("Cached asset not found, fetching it");
                             return fetch(event.request);
                         })
             })

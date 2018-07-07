@@ -2,7 +2,7 @@ import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 
-import Weather from '../components/Weather.component';
+import Weather from '../components/Weather';
 
 import dataPointsActionCreators from '../actions/dataPointsActionCreators.js';
 

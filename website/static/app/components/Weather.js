@@ -1,6 +1,6 @@
 import React from 'react';
 
-import Forecast from '../components/Forecast.component';
+import Forecast from './Forecast';
 
 class Weather extends React.Component {
     componentDidMount(prevProps) {
@@ -10,8 +10,6 @@ class Weather extends React.Component {
 
     render() {
         const { currentConditions, hourlyForecast, dailyForecast } = this.props;
-        console.log('Rendering');
-        console.log(currentConditions, hourlyForecast, dailyForecast);
         if (!currentConditions || !hourlyForecast || !dailyForecast) {
             return 'Loading...';
         }

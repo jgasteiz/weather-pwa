@@ -3,7 +3,7 @@ const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
 
 
 module.exports = {
-    entry: './website/static/js/main.js',
+    entry: './website/static/app/main.js',
     output: {
         path: path.resolve(__dirname, 'website/static/dist'),
         filename: 'app.bundle.js'

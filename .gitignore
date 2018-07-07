@@ -8,8 +8,9 @@ venv
 staticfiles
 db.sqlite3
 /node_modules
-/website/static/dist/app.bundle.js
-/website/static/dist/app.bundle.js.map
+/website/static/dist/*.json
+/website/static/dist/*.js
+/website/static/dist/*.js.map
 
 # Code editors
 .idea/
