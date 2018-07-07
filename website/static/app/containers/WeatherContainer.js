@@ -1,6 +1,7 @@
 import React from 'react';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
+import {Switch, Route, withRouter} from 'react-router-dom';
 
 import Weather from '../components/Weather';
 
@@ -13,12 +14,16 @@ export class WeatherContainer extends React.Component {
     render () {
         const {currentConditions, hourlyForecast, dailyForecast, isLoading} = this.props;
         return (
-            <Weather
-                currentConditions={currentConditions}
-                hourlyForecast={hourlyForecast}
-                dailyForecast={dailyForecast}
-                isLoading={isLoading}
-            />
+            <Switch>
+                <Route exact path="/">
+                    <Weather
+                        currentConditions={currentConditions}
+                        hourlyForecast={hourlyForecast}
+                        dailyForecast={dailyForecast}
+                        isLoading={isLoading}
+                    />
+                </Route>
+            </Switch>
         );
     }
 }
@@ -66,4 +71,4 @@ const mapDispatchToProps = (dispatch) => ({
     fetchDatapoints: bindActionCreators(dataPointsActionCreators.fetchDatapoints, dispatch)
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(WeatherContainer);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WeatherContainer));
