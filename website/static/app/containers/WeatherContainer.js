@@ -5,7 +5,7 @@ import {Switch, Route, withRouter} from 'react-router-dom';
 
 import Weather from '../components/Weather';
 
-import dataPointsActionCreators from '../actions/dataPointsActionCreators.js';
+import {fetchDatapoints} from '../actions/dataPointsActionCreators.js';
 import AboutPage from "../components/AboutPage";
 import Navigation from "../components/Navigation";
 
@@ -15,10 +15,17 @@ export class WeatherContainer extends React.Component {
         this.props.fetchDatapoints();
     }
     render () {
-        const {currentConditions, hourlyForecast, dailyForecast, isLoading} = this.props;
+        const {
+            currentConditions,
+            hourlyForecast,
+            dailyForecast,
+            isLoading, fetchDatapoints,
+        } = this.props;
         return (
             <div className="page-content">
-                <Navigation/>
+                <Navigation
+                    onRefreshClick={fetchDatapoints}
+                />
                 <Switch>
                     <Route exact path="/">
                         <Weather
@@ -77,7 +84,7 @@ const mapStateToProps = (state) => {
 };
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchDatapoints: bindActionCreators(dataPointsActionCreators.fetchDatapoints, dispatch)
+    fetchDatapoints: bindActionCreators(fetchDatapoints, dispatch)
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WeatherContainer));

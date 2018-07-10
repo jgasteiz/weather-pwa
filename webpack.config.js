@@ -1,5 +1,5 @@
 const path = require('path');
-const BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+const BrowserSyncPlugin = require('browser-sync-webpack-plugin');
 
 
 module.exports = {
@@ -29,7 +29,8 @@ module.exports = {
             // ./public directory is being served
             host: 'localhost',
             port: 3000,
-            proxy: 'http://localhost:8000/'
+            proxy: 'http://localhost:8000/',
+            open: false,
         },
         {
             // prevent BrowserSync from reloading the page

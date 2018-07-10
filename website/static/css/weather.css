@@ -7,8 +7,10 @@ a {
     max-width: 900px;
 }
 
-.weather-nav {
-    margin-bottom: 12px;
+.weather-nav__refresh {
+    color: #924da3 !important;
+    cursor: pointer;
+    font-size: 2rem;
 }
 
 .weather__location {

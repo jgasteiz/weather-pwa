@@ -3,10 +3,12 @@ import thunkMiddleware from 'redux-thunk';
 import dataPointsReducer from './reducers/dataPointsReducer';
 
 
-export default function configureStore(preloadedState) {
+const configureStore = (preloadedState) => {
     return createStore(
         dataPointsReducer,
         preloadedState,
         applyMiddleware(thunkMiddleware)
     );
-}
+};
+
+export default configureStore;
