@@ -1,6 +1,7 @@
 install:
 	pip install pipenv
 	pipenv install
+	yarn install
 
 run:
 	pipenv run -- honcho -f Procfile.dev start
@@ -19,3 +20,4 @@ fetchdailyforecast:
 
 test:
 	pipenv run -- py.test -s -v --cov-report html --cov-report term --cov=weather --cov=weatherservice --cov=website
+	yarn run test

@@ -5,10 +5,10 @@ import {PropTypes} from "prop-types";
 const DataPoint = ({dpType, topValue1, topValue2, icon, bottomValue}) => {
     return (
         <div className={`forecast__${dpType}`}>
-            <div>{topValue1}</div>
-            <div>{topValue2}</div>
+            <div className="forecast__top-value-1">{topValue1}</div>
+            <div className="forecast__top-value-2">{topValue2}</div>
             <div><i className={`weather__icon wi ${icon}`}/></div>
-            <div>{bottomValue}</div>
+            <div className="forecast__bottom-value">{bottomValue}</div>
         </div>
     );
 };

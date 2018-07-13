@@ -10,12 +10,17 @@
     "@fortawesome/free-solid-svg-icons": "^5.1.0-11",
     "@fortawesome/react-fontawesome": "^0.1.0-11",
     "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
+    "babel-core": "^6.26.3",
+    "babel-jest": "^23.4.0",
     "babel-loader": "^7.1.2",
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
+    "babel-preset-env": "^1.7.0",
     "babel-preset-es2015": "^6.24.1",
     "babel-preset-react": "^6.24.1",
+    "enzyme": "^3.3.0",
+    "enzyme-adapter-react-16": "^1.1.1",
+    "jest": "^23.4.1",
+    "jsdom": "^11.11.0",
     "prop-types": "^15.6.2",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",
@@ -29,7 +34,8 @@
   "scripts": {
     "webpack": "webpack --progress --colors",
     "webpack-watch": "webpack --progress --colors --watch",
-    "heroku-postbuild": "webpack && python manage.py collectstatic --noinput"
+    "heroku-postbuild": "webpack && python manage.py collectstatic --noinput",
+    "test": "jest"
   },
   "devDependencies": {
     "browser-sync": "^2.24.5",

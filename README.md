@@ -5,10 +5,9 @@
 ## Set up
 
 - Clone the repo
-- Run `make install` to install all backend dependencies.
-- Run `yarn install && yarn webpack` to install and build all frontend dependencies.
+- Run `make install` to install all dependencies.
 - Run `make run` to run the project in the local server.
-- Run `make tests` to run the tests.
+- Run `make test` to run the tests.
 
 ## Resources
 
