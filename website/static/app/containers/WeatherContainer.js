@@ -5,26 +5,30 @@ import {Switch, Route, withRouter} from 'react-router-dom';
 
 import Weather from '../components/Weather';
 
-import {fetchDatapoints} from '../actions/dataPointsActionCreators.js';
+import {fetchWeatherData} from '../actions/dataPointsActionCreators.js';
 import AboutPage from "../components/AboutPage";
 import Navigation from "../components/Navigation";
 
 
 export class WeatherContainer extends React.Component {
     componentDidMount() {
-        this.props.fetchDatapoints();
+        this.props.fetchWeatherData();
     }
     render () {
         const {
             currentConditions,
-            hourlyForecast,
             dailyForecast,
-            isLoading, fetchDatapoints,
+            fetchWeatherData,
+            hourlyForecast,
+            isLoading,
+            navigationItems,
         } = this.props;
+
         return (
             <div className="page-content">
                 <Navigation
-                    onRefreshClick={fetchDatapoints}
+                    onRefreshClick={fetchWeatherData}
+                    navigationItems={navigationItems}
                 />
                 <Switch>
                     <Route exact path="/">
@@ -44,47 +48,16 @@ export class WeatherContainer extends React.Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    function getCurrentConditions(dataPoints) {
-        if (!dataPoints || !dataPoints.hasOwnProperty('current_conditions')) {
-            return {};
-        }
-        const currentWeather = dataPoints['current_conditions'];
-        return {
-            locationName: currentWeather['location_name'],
-            dataTimestamp: currentWeather['datapoint_time'],
-            temperature: currentWeather['temperature'],
-            weatherIcon: currentWeather['weather_icon'],
-            weatherName: currentWeather['weather_icon_name'],
-            mobileLink: currentWeather['mobile_link'],
-        };
-    }
-
-    function getHourlyForecast(dataPoints) {
-        if (!dataPoints || !dataPoints.hasOwnProperty('hourly_forecast')) {
-            return [];
-        }
-        return dataPoints['hourly_forecast'];
-    }
-
-    function getDailyForecast(dataPoints) {
-        if (!dataPoints || !dataPoints.hasOwnProperty('daily_forecast')) {
-            return [];
-        }
-        return dataPoints['daily_forecast'];
-    }
-
-    return {
-        dataPoints: state.dataPoints,
-        isLoading: state.isLoading,
-        currentConditions: getCurrentConditions(state.dataPoints),
-        hourlyForecast: getHourlyForecast(state.dataPoints),
-        dailyForecast: getDailyForecast(state.dataPoints),
-    };
-};
+const mapStateToProps = (state) => ({
+    isLoading: state.data.isLoading,
+    currentConditions: state.data.currentConditions,
+    hourlyForecast: state.data.hourlyForecast,
+    dailyForecast: state.data.dailyForecast,
+    navigationItems: state.navigationItems,
+});
 
 const mapDispatchToProps = (dispatch) => ({
-    fetchDatapoints: bindActionCreators(fetchDatapoints, dispatch)
+    fetchWeatherData: bindActionCreators(fetchWeatherData, dispatch)
 });
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WeatherContainer));

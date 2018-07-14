@@ -1,25 +1,27 @@
-import {REQUEST_DATAPOINTS, RECEIVE_DATAPOINTS} from '../actions/dataPointsActionCreators';
+import {REQUEST_DATAPOINTS, RECEIVE_DATAPOINTS_SUCCESS} from '../actions/dataPointsActionCreators';
 
 
-const dataPointsReducer = (
-    state = {
-        dataPoints: {},
-        isLoading: true,
-    },
-    action
-) => {
+const dataPointsReducer = (state, action) => {
     switch (action.type) {
         case REQUEST_DATAPOINTS:
             return {
                 ...state,
-                dataPoints: {},
-                isLoading: true,
+                data: {
+                    currentConditions: {},
+                    hourlyForecast: [],
+                    dailyForecast: [],
+                    isLoading: true,
+                }
             };
-        case RECEIVE_DATAPOINTS:
+        case RECEIVE_DATAPOINTS_SUCCESS:
             return {
                 ...state,
-                dataPoints: action.dataPoints,
-                isLoading: false,
+                data: {
+                    currentConditions: action.weatherData.currentConditions,
+                    hourlyForecast: action.weatherData.hourlyForecast,
+                    dailyForecast: action.weatherData.dailyForecast,
+                    isLoading: false,
+                }
             };
         default:
             return state;

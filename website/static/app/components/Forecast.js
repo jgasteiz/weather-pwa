@@ -1,24 +1,25 @@
 import React from 'react';
 
 import DataPoint from './DataPoint';
-import {PropTypes} from "prop-types";
+import PropTypes from 'prop-types';
 
 
 const Forecast = ({forecastType, forecastTitle, dataPoints}) => {
 
-    const forecastDataPoints = dataPoints.map((data, index) => {
+    const forecastDataPoints = dataPoints.map((data) => {
 
         const keyValue = data[_getKeyValueKey()];
         let topValue1 = data[_getTopValue1Key()];
         let topValue2 = data[_getTopValue2Key()];
         const bottomValue = data[_getBottomValueKey()];
-        const icon = data[_getIconKey()];
+        const icon = data['weather_icon'];
 
         if (forecastType === 'date') {
             topValue1 = `Max: ${topValue1}°C`;
             topValue2 = `Min: ${topValue2}°C`;
         } else {
             topValue1 = `${topValue1}°C`;
+            topValue2 = null;
         }
 
         return (
@@ -76,10 +77,6 @@ const Forecast = ({forecastType, forecastTitle, dataPoints}) => {
 
     function _getKeyValueKey() {
         return _getBottomValueKey();
-    }
-
-    function _getIconKey() {
-        return 'weather_icon';
     }
 };
 

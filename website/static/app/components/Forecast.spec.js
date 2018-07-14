@@ -44,16 +44,16 @@ describe('<Forecast/>', () => {
         expect(wrapper.find('DataPoint').length).toBe(2);
 
         const firstDataPoint = wrapper.find('DataPoint').at(0);
-        expect(firstDataPoint.props().topValue1).toBe('Max: 30°C');
-        expect(firstDataPoint.props().topValue2).toBe('Min: 24°C');
-        expect(firstDataPoint.props().bottomValue).toBe('July 14');
-        expect(firstDataPoint.props().icon).toBe('wi-cloudy');
+        expect(firstDataPoint.prop('topValue1')).toBe('Max: 30°C');
+        expect(firstDataPoint.prop('topValue2')).toBe('Min: 24°C');
+        expect(firstDataPoint.prop('bottomValue')).toBe('July 14');
+        expect(firstDataPoint.prop('icon')).toBe('wi-cloudy');
 
         const secondDataPoint = wrapper.find('DataPoint').at(1);
-        expect(secondDataPoint.props().topValue1).toBe('Max: 20°C');
-        expect(secondDataPoint.props().topValue2).toBe('Min: 14°C');
-        expect(secondDataPoint.props().bottomValue).toBe('July 15');
-        expect(secondDataPoint.props().icon).toBe('wi-sunny');
+        expect(secondDataPoint.prop('topValue1')).toBe('Max: 20°C');
+        expect(secondDataPoint.prop('topValue2')).toBe('Min: 14°C');
+        expect(secondDataPoint.prop('bottomValue')).toBe('July 15');
+        expect(secondDataPoint.prop('icon')).toBe('wi-sunny');
     });
 
     it('renders hour Forecast', () => {
@@ -64,15 +64,15 @@ describe('<Forecast/>', () => {
         expect(wrapper.find('DataPoint').length).toBe(2);
 
         const firstDataPoint = wrapper.find('DataPoint').at(0);
-        expect(firstDataPoint.props().topValue1).toBe('27°C');
-        expect(firstDataPoint.props().topValue2).toBe(undefined);
-        expect(firstDataPoint.props().bottomValue).toBe('10:00');
-        expect(firstDataPoint.props().icon).toBe('wi-cloudy');
+        expect(firstDataPoint.prop('topValue1')).toBe('27°C');
+        expect(firstDataPoint.prop('topValue2')).toBe(null);
+        expect(firstDataPoint.prop('bottomValue')).toBe('10:00');
+        expect(firstDataPoint.prop('icon')).toBe('wi-cloudy');
 
         const secondDataPoint = wrapper.find('DataPoint').at(1);
-        expect(secondDataPoint.props().topValue1).toBe('17°C');
-        expect(secondDataPoint.props().topValue2).toBe(undefined);
-        expect(secondDataPoint.props().bottomValue).toBe('11:00');
-        expect(secondDataPoint.props().icon).toBe('wi-sunny');
+        expect(secondDataPoint.prop('topValue1')).toBe('17°C');
+        expect(secondDataPoint.prop('topValue2')).toBe(null);
+        expect(secondDataPoint.prop('bottomValue')).toBe('11:00');
+        expect(secondDataPoint.prop('icon')).toBe('wi-sunny');
     });
 });
