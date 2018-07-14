@@ -36,7 +36,7 @@
     "webpack": "webpack --progress --colors",
     "webpack-watch": "webpack --progress --colors --watch",
     "heroku-postbuild": "webpack && python manage.py collectstatic --noinput",
-    "test": "jest"
+    "test": "jest --silent"
   },
   "devDependencies": {
     "browser-sync": "^2.24.5",

@@ -1,6 +1,5 @@
 import React from 'react';
 import {Provider} from 'react-redux';
-import {HashRouter} from 'react-router-dom';
 
 import WeatherContainer from './containers/WeatherContainer';
 import configureStore from './configureStore.js';
@@ -37,16 +36,9 @@ const initialState = {
     ],
 };
 
-class Root extends React.Component {
-    render() {
-        return (
-            <Provider store={configureStore(initialState)}>
-                <HashRouter>
-                    <WeatherContainer/>
-                </HashRouter>
-            </Provider>
-        );
-    }
-}
+const Root = () =>
+    <Provider store={configureStore(initialState)}>
+        <WeatherContainer/>
+    </Provider>;
 
 export default Root;

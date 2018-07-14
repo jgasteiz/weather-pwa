@@ -1,4 +1,5 @@
 import React from 'react';
+import {HashRouter} from 'react-router-dom';
 import {bindActionCreators} from 'redux';
 import {connect} from 'react-redux';
 import {Switch, Route, withRouter} from 'react-router-dom';
@@ -25,25 +26,27 @@ export class WeatherContainer extends React.Component {
         } = this.props;
 
         return (
-            <div className="page-content">
-                <Navigation
-                    onRefreshClick={fetchWeatherData}
-                    navigationItems={navigationItems}
-                />
-                <Switch>
-                    <Route exact path="/">
-                        <Weather
-                            currentConditions={currentConditions}
-                            hourlyForecast={hourlyForecast}
-                            dailyForecast={dailyForecast}
-                            isLoading={isLoading}
-                        />
-                    </Route>
-                    <Route exact path="/about">
-                        <AboutPage/>
-                    </Route>
-                </Switch>
-            </div>
+            <HashRouter>
+                <div className="page-content">
+                    <Navigation
+                        onRefreshClick={fetchWeatherData}
+                        navigationItems={navigationItems}
+                    />
+                    <Switch>
+                        <Route exact path="/">
+                            <Weather
+                                currentConditions={currentConditions}
+                                hourlyForecast={hourlyForecast}
+                                dailyForecast={dailyForecast}
+                                isLoading={isLoading}
+                            />
+                        </Route>
+                        <Route exact path="/about">
+                            <AboutPage/>
+                        </Route>
+                    </Switch>
+                </div>
+            </HashRouter>
         );
     }
 }
@@ -60,4 +63,4 @@ const mapDispatchToProps = (dispatch) => ({
     fetchWeatherData: bindActionCreators(fetchWeatherData, dispatch)
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(WeatherContainer));
+export default connect(mapStateToProps, mapDispatchToProps)(WeatherContainer);
