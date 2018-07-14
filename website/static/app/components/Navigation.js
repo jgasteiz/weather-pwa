@@ -16,7 +16,7 @@ const Navigation = ({navigationItems, onRefreshClick}) =>
             </ul>
         </div>
         <div className="col-auto">
-            <a className="nav-link weather-nav__refresh" onClick={onRefreshClick}><FontAwesomeIcon icon="sync"/></a>
+            <a id="refresh-weather-data" className="nav-link weather-nav__refresh" onClick={onRefreshClick}><FontAwesomeIcon icon="sync"/></a>
         </div>
     </div>;
 

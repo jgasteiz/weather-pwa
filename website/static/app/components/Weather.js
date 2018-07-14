@@ -7,7 +7,7 @@ import Forecast from './Forecast';
 const Weather = ({currentConditions, hourlyForecast, dailyForecast, isLoading}) =>
     <div className="weather">
         {isLoading
-            ? <h1>Loading weather...</h1>
+            ? <h1 className="weather__loading">Loading weather...</h1>
             : <div>
                 <h1 className="weather__location">{currentConditions.locationName}</h1>
                 <span className="weather__date">{currentConditions.dataTimestamp}</span>
