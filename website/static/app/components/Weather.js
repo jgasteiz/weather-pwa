@@ -12,7 +12,7 @@ const Weather = ({currentConditions, hourlyForecast, dailyForecast, isLoading}) 
                 <h1 className="weather__location">{currentConditions.locationName}</h1>
                 <span className="weather__date">{currentConditions.dataTimestamp}</span>
                 <span className="weather__temperature">
-                    {currentConditions.temperature}&#x2103;
+                    {currentConditions.temperature}°C
                 </span>
 
                 <div className="text-center">

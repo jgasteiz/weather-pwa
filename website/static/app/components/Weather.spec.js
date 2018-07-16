@@ -32,7 +32,7 @@ describe('<Weather/>', () => {
 
         expect(wrapper.find('.weather__location').text()).toBe('London, UK');
         expect(wrapper.find('.weather__date').text()).toBe('21:30');
-        expect(wrapper.find('.weather__temperature').text()).toBe('26.2℃');
+        expect(wrapper.find('.weather__temperature').text()).toBe('26.2°C');
         expect(wrapper.find('.ic-sunny').exists()).toBe(true);
         expect(wrapper.find('.weather__icon-name').text()).toBe('Sunny day!');
 
