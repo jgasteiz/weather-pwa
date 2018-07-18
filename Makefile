@@ -20,4 +20,4 @@ fetchdailyforecast:
 
 test:
 	pipenv run -- py.test -s -v --cov-report html --cov-report term --cov=weather --cov=weatherservice --cov=website
-	yarn run test
+	yarn run test --coverage
