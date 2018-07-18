@@ -9,24 +9,28 @@ const Weather = ({currentConditions, hourlyForecast, dailyForecast, isLoading}) 
         {isLoading
             ? <h1 className="weather__loading">Loading weather...</h1>
             : <div>
-                <h1 className="weather__location">{currentConditions.locationName}</h1>
-                <span className="weather__date">{currentConditions.dataTimestamp}</span>
-                <span className="weather__temperature">
-                    {currentConditions.temperature}°C
-                </span>
+                <div id="current-weather">
+                    <h1 className="weather__location">{currentConditions.locationName}</h1>
+                    <span className="weather__date">{currentConditions.dataTimestamp}</span>
+                    <span className="weather__temperature">
+                        {currentConditions.temperature}°C
+                    </span>
 
-                <div className="text-center">
-                    <i className={`weather__icon weather__icon--large wi ${currentConditions.weatherIcon}`}/>
-                    <span className="weather__icon-name">{currentConditions.weatherName}</span>
+                    <div className="text-center">
+                        <i className={`weather__icon weather__icon--large wi ${currentConditions.weatherIcon}`}/>
+                        <span className="weather__icon-name">{currentConditions.weatherName}</span>
+                    </div>
                 </div>
 
                 <div className="forecast">
                     <Forecast
+                        id="hourly-forecast"
                         forecastTitle="Next 12 hours"
                         forecastType="hour"
                         dataPoints={hourlyForecast}
                     />
                     <Forecast
+                        id="daily-forecast"
                         forecastTitle="Next 5 days"
                         forecastType="date"
                         dataPoints={dailyForecast}
