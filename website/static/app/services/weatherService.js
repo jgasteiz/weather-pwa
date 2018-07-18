@@ -1,3 +1,5 @@
+import apiClient from './apiClient';
+
 
 const getCurrentConditions = (dataPoints) => {
     if (!dataPoints || !dataPoints.hasOwnProperty('current_conditions')) {
@@ -34,8 +36,7 @@ const getDailyForecast = (dataPoints) => {
  * hourly forecast and daily forecast.
  */
 const fetchWeatherDataPoints = async () => {
-    return await fetch('/api/forecast/')
-        .then(res => res.json())
+    return await apiClient.fetchApiForecast()
         .then(dataPoints => ({
             currentConditions: getCurrentConditions(dataPoints),
             hourlyForecast: getHourlyForecast(dataPoints),
