@@ -1,0 +1,10 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    command: pipenv run -- honcho -f Procfile.docker start
+    volumes:
+      - .:/code
+    ports:
+      - "8000:8000"
