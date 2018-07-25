@@ -12,7 +12,7 @@ def get_weather_json_data():
     )
     current_conditions = {}
     if current_conditions_qs.exists():
-        current_conditions_serializer = ForecastDataPointSerializer(current_conditions_qs.last())
+        current_conditions_serializer = ForecastDataPointSerializer(current_conditions_qs.first())
         current_conditions = current_conditions_serializer.data
 
     hourly_forecast_qs = ForecastDataPoint.objects.filter(

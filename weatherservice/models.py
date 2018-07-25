@@ -41,7 +41,7 @@ class ForecastDataPoint(models.Model):
     data_point_type = models.CharField(choices=DATA_POINT_TYPES, default=HOURLY_FORECAST, max_length=32)
 
     class Meta:
-        ordering = ['datetime']
+        ordering = ['-datetime']
 
     def __repr__(self):
         return '%s | %s | %s' % (self.location_name, self.datetime, self.temperature)

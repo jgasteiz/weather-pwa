@@ -17,6 +17,7 @@ urlpatterns = [
 
     # API
     url(r'^api/forecast', api.forecast, name='api_forecast'),
+    url(r'^api/historic-data', api.HistoricDataView.as_view(), name='historic_data'),
 
     # Admin
     path('admin/', admin.site.urls),

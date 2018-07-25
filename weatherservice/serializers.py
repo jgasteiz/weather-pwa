@@ -35,3 +35,17 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
 
     def get_location_name(self, obj):
         return obj.location.name
+
+
+class HistoricDataPointSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ForecastDataPoint
+        fields = (
+            'localized_datetime',
+            'location_name',
+            'temperature',
+            'temperature_min',
+            'temperature_max',
+            'weather_icon',
+            'weather_icon_name',
+        )
