@@ -12,7 +12,6 @@ const getCurrentConditions = (dataPoints) => {
         temperature: currentWeather['temperature'],
         weatherIcon: currentWeather['weather_icon'],
         weatherName: currentWeather['weather_icon_name'],
-        mobileLink: currentWeather['mobile_link'],
     };
 };
 

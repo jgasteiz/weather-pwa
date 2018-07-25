@@ -22,7 +22,6 @@ class ForecastDataPointSerializer(serializers.ModelSerializer):
             'temperature_max',
             'weather_icon',
             'weather_icon_name',
-            'mobile_link',
         )
 
     def get_datapoint_hour(self, obj):

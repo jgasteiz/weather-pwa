@@ -167,7 +167,6 @@ class WeatherServiceController(object):
             forecast.temperature = data_point.get('Temperature').get('Value')
             forecast.weather_icon = self.ACCUWEATHER_ICON_MAP.get(str(data_point.get('WeatherIcon')))
             forecast.weather_icon_name = data_point.get('IconPhrase')
-            forecast.mobile_link = data_point.get('MobileLink')
             forecast.save()
 
     def fetch_daily_forecast(self):

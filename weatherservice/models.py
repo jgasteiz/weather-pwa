@@ -38,7 +38,6 @@ class ForecastDataPoint(models.Model):
     temperature_max = models.FloatField(null=True, default=0)
     weather_icon = models.CharField(max_length=128, blank=True)
     weather_icon_name = models.CharField(max_length=128, blank=True)
-    mobile_link = models.URLField(blank=True)
     data_point_type = models.CharField(choices=DATA_POINT_TYPES, default=HOURLY_FORECAST, max_length=32)
 
     class Meta:
